@@ -6,10 +6,17 @@
 export.cfg
 export_presets.cfg
 
-# Imported translations (automatically generated from CSV files)
-*.translation
-
 # Mono-specific ignores
 .mono/
 data_*/
 mono_crash.*.json
+
+# Windows
+desktop.ini
+
+# project
+tools/Godot*.exe
+tools/Godot*.cmd
+
+# blender
+*.blend1
