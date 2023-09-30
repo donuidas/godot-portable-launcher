@@ -19,6 +19,11 @@ config/icon="res://icon.svg"
 
 SysSettings="*res://global/SysSettings.tscn"
 
+[display]
+
+window/size/viewport_width=300
+window/size/viewport_height=500
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/kanban_tasks/plugin.cfg", "res://addons/sciurus_call/plugin.cfg", "res://addons/sciurus_system_settings/plugin.cfg")

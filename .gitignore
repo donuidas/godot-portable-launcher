@@ -20,3 +20,6 @@ tools/Godot*.cmd
 
 # blender
 *.blend1
+
+# Godot Editor specific ignores
+#**/editor_data/*cache
