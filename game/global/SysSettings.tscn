@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://dsew88ohwfdi6"]
+
+[ext_resource type="Script" path="res://addons/sciurus_system_settings/system_settings.gd" id="1_0b7ta"]
+
+[node name="SystemSettings" type="Node"]
+script = ExtResource("1_0b7ta")
+variable_resolution = true
+resolution = Vector2i(0, 0)
+disable_pre_3d = true
