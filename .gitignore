@@ -17,9 +17,12 @@ desktop.ini
 # project
 tools/Godot*.exe
 tools/Godot*.cmd
+export/
 
 # blender
 *.blend1
 
 # Godot Editor specific ignores
-**/editor_data/*cache
+tools/editor_data/*cache
+tools/editor_data/recent_dirs
+tools/editor_data/export_templates

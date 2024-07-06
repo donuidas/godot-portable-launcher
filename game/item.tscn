@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://bjygaefx0yi67"]
+
+[node name="item" type="BoxContainer"]
+
+[node name="name" type="Label" parent="."]
+layout_mode = 2
+text = "Godot
+"
+
+[node name="points" type="Label" parent="."]
+layout_mode = 2
+text = ":"
+
+[node name="status" type="Label" parent="."]
+layout_mode = 2

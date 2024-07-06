@@ -1,14 +1,19 @@
-[gd_scene format=3 uid="uid://dmfg0oj6vkgcr"]
+[gd_scene load_steps=3 format=3 uid="uid://dmfg0oj6vkgcr"]
 
-[node name="Control" type="Control"]
+[ext_resource type="Script" path="res://main.gd" id="1_a00df"]
+[ext_resource type="PackedScene" uid="uid://bjygaefx0yi67" path="res://item.tscn" id="2_wt56x"]
+
+[node name="main" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_a00df")
 
-[node name="TabContainer" type="TabContainer" parent="."]
+[node name="tab" type="TabContainer" parent="."]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,65 +22,80 @@ grow_horizontal = 2
 grow_vertical = 2
 tabs_visible = false
 
-[node name="Start" type="Control" parent="TabContainer"]
+[node name="start_tab" type="TabContainer" parent="tab"]
+unique_name_in_owner = true
+layout_mode = 2
+tabs_visible = false
+
+[node name="start" type="Control" parent="tab/start_tab"]
 layout_mode = 2
 
-[node name="VFlowContainer" type="VFlowContainer" parent="TabContainer/Start"]
+[node name="VFlow" type="VFlowContainer" parent="tab/start_tab/start"]
 layout_mode = 1
 anchors_preset = 13
 anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -31.5
-offset_right = 31.5
+offset_left = -48.0
+offset_right = 48.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Start2" type="Control" parent="TabContainer"]
+[node name="edit" type="Button" parent="tab/start_tab/start/VFlow"]
+layout_mode = 2
+text = "start editor"
+
+[node name="Button" type="Button" parent="tab/start_tab/start/VFlow"]
+layout_mode = 2
+text = "tst"
+
+[node name="download" type="Control" parent="tab/start_tab"]
 visible = false
 layout_mode = 2
 
-[node name="VFlowContainer" type="VFlowContainer" parent="TabContainer/Start2"]
-visible = false
+[node name="VFlow" type="VFlowContainer" parent="tab/start_tab/download"]
 layout_mode = 1
 anchors_preset = 13
 anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -31.5
-offset_right = 31.5
+offset_left = -48.0
+offset_right = 48.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Label" type="Label" parent="TabContainer/Start2/VFlowContainer"]
+[node name="download" type="Button" parent="tab/start_tab/download/VFlow"]
 layout_mode = 2
-size_flags_vertical = 1
-text = "gfdhtfhf"
+text = "Download
+"
 
-[node name="Edit" type="Button" parent="TabContainer/Start2/VFlowContainer"]
-layout_mode = 2
-text = "Start Editor"
-
-[node name="start" type="Button" parent="TabContainer/Start2/VFlowContainer"]
-layout_mode = 2
-text = "Start Project"
-
-[node name="dl_godot" type="Button" parent="TabContainer/Start2/VFlowContainer"]
-layout_mode = 2
-text = "Download Godot"
-
-[node name="dl_blender" type="Button" parent="TabContainer/Start2/VFlowContainer"]
-layout_mode = 2
-text = "Download Blender"
-
-[node name="update_tools" type="Button" parent="TabContainer/Start2/VFlowContainer"]
-layout_mode = 2
-text = "Update Tools"
-
-[node name="Download" type="Control" parent="TabContainer"]
+[node name="Download" type="Control" parent="tab"]
 visible = false
 layout_mode = 2
 
-[node name="Einstelungen" type="Control" parent="TabContainer"]
+[node name="HTTPRequest" type="HTTPRequest" parent="tab/Download"]
+unique_name_in_owner = true
+
+[node name="Box" type="BoxContainer" parent="tab/Download"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+vertical = true
+
+[node name="item" parent="tab/Download/Box" instance=ExtResource("2_wt56x")]
+layout_mode = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="tab/Download/Box"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 2
+
+[node name="Einstelungen" type="Control" parent="tab"]
 visible = false
 layout_mode = 2
+
+[connection signal="pressed" from="tab/start_tab/download/VFlow/download" to="." method="download"]
