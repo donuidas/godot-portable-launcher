@@ -11,7 +11,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_a00df")
-start_tab = 1
 
 [node name="tab" type="TabContainer" parent="."]
 unique_name_in_owner = true
@@ -29,7 +28,6 @@ layout_mode = 2
 tabs_visible = false
 
 [node name="start" type="Control" parent="tab/start_tab"]
-visible = false
 layout_mode = 2
 
 [node name="VFlow" type="VFlowContainer" parent="tab/start_tab/start"]
@@ -52,6 +50,7 @@ layout_mode = 2
 text = "start project"
 
 [node name="download" type="Control" parent="tab/start_tab"]
+visible = false
 layout_mode = 2
 
 [node name="VFlow" type="VFlowContainer" parent="tab/start_tab/download"]
