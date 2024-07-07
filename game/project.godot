@@ -13,6 +13,9 @@ config_version=5
 config/name="Godot-portable-launcher"
 run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.1", "Mobile")
+boot_splash/show_image=false
+boot_splash/fullsize=false
+boot_splash/use_filter=false
 config/icon="res://icon.svg"
 
 [autoload]
@@ -22,11 +25,11 @@ SysSettings="*res://global/SysSettings.tscn"
 [display]
 
 window/size/viewport_width=300
-window/size/viewport_height=500
+window/size/viewport_height=200
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/kanban_tasks/plugin.cfg", "res://addons/sciurus_call/plugin.cfg", "res://addons/sciurus_system_settings/plugin.cfg")
+enabled=PackedStringArray("res://addons/sciurus_system_settings/plugin.cfg")
 
 [filesystem]
 

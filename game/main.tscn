@@ -11,6 +11,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_a00df")
+start_tab = 1
 
 [node name="tab" type="TabContainer" parent="."]
 unique_name_in_owner = true
@@ -28,6 +29,7 @@ layout_mode = 2
 tabs_visible = false
 
 [node name="start" type="Control" parent="tab/start_tab"]
+visible = false
 layout_mode = 2
 
 [node name="VFlow" type="VFlowContainer" parent="tab/start_tab/start"]
@@ -45,12 +47,11 @@ grow_vertical = 2
 layout_mode = 2
 text = "start editor"
 
-[node name="Button" type="Button" parent="tab/start_tab/start/VFlow"]
+[node name="start" type="Button" parent="tab/start_tab/start/VFlow"]
 layout_mode = 2
-text = "tst"
+text = "start project"
 
 [node name="download" type="Control" parent="tab/start_tab"]
-visible = false
 layout_mode = 2
 
 [node name="VFlow" type="VFlowContainer" parent="tab/start_tab/download"]
@@ -94,8 +95,16 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 2
 
+[node name="end" type="Button" parent="tab/Download/Box"]
+visible = false
+layout_mode = 2
+text = "fertig"
+
 [node name="Einstelungen" type="Control" parent="tab"]
 visible = false
 layout_mode = 2
 
-[connection signal="pressed" from="tab/start_tab/download/VFlow/download" to="." method="download"]
+[connection signal="pressed" from="tab/start_tab/start/VFlow/edit" to="." method="start_editor"]
+[connection signal="pressed" from="tab/start_tab/start/VFlow/start" to="." method="start_project"]
+[connection signal="pressed" from="tab/start_tab/download/VFlow/download" to="." method="dl_start"]
+[connection signal="request_completed" from="tab/Download/HTTPRequest" to="." method="dl_zip" unbinds=4]

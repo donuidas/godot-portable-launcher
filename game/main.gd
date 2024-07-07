@@ -2,8 +2,6 @@
 extends Control
 
 
-#var tst2 = %tab
-
 @export var tab = 0:
 	get:
 		if is_node_ready():
@@ -34,30 +32,40 @@ extends Control
 			await ready
 			%start_tab.current_tab = value
 
-@export var tst = false:
-	set(value):
-		start_check()
 
+const c_tools = "res://tools/"
+const c_sc = "res://tools/_sc_"
+const c_got_ver = "res://tools/godot.ver"
+const c_blend_ver = "res://tools/blender.ver"
+const c_got_web = "https://downloads.tuxfamily.org/godotengine/"
 
 var fs_root: DirAccess = DirAccess.open("res://")
+var fs_godot = ""
+
 var downloading = false
-var dl_start = false
+var dl_ziping = false
 var dl_godot = false
+var dl_current = ""
+
+var zip_thread = Thread.new()
+var zip_reader = ZIPReader.new()
+var zip_files: Array = []
+var zip_files_size = 0
 
 
 func _init():
 	if fs_root.dir_exists("tools"):
-		if not FileAccess.file_exists("res://tools/_sc_"):
-			FileAccess.open("res://tools/_sc_", FileAccess.WRITE).close()
-		if not FileAccess.file_exists("res://tools/godot.ver"):
-			FileAccess.open("res://tools/godot.ver", FileAccess.WRITE).close()
-		if not FileAccess.file_exists("res://tools/blender.ver"):
-			FileAccess.open("res://tools/blender.ver", FileAccess.WRITE).close()
+		if not FileAccess.file_exists(c_sc):
+			FileAccess.open(c_sc, FileAccess.WRITE).close()
+		if not FileAccess.file_exists(c_got_ver):
+			FileAccess.open(c_got_ver, FileAccess.WRITE).close()
+		if not FileAccess.file_exists(c_blend_ver):
+			FileAccess.open(c_blend_ver, FileAccess.WRITE).close()
 	else:
 		fs_root.make_dir("tools")
-		FileAccess.open("res://tools/_sc_", FileAccess.WRITE).close()
-		FileAccess.open("res://tools/godot.ver", FileAccess.WRITE).close()
-		FileAccess.open("res://tools/blender.ver", FileAccess.WRITE).close()
+		FileAccess.open(c_sc, FileAccess.WRITE).close()
+		FileAccess.open(c_got_ver, FileAccess.WRITE).close()
+		FileAccess.open(c_blend_ver, FileAccess.WRITE).close()
 #	fs_tools = DirAccess.open("res://tools")
 
 func _ready():
@@ -65,44 +73,83 @@ func _ready():
 
 func _process(delta):
 	if downloading:
-		
-		if dl_start:
-			if dl_godot:
-				var tmp_ver_file = FileAccess.open("res://tools/godot.ver", FileAccess.READ)
-				var tmp_ver = tmp_ver_file.get_as_text()
-				tmp_ver_file.close()
-				if not tmp_ver == "":
-					var tmp_exe_str = "Godot_v"+tmp_ver+"-stable_win64.exe"
-					%HTTPRequest.download_file = tmp_exe_str+".zip"
-					%HTTPRequest.request("https://downloads.tuxfamily.org/godotengine/"+tmp_ver+"/"+tmp_exe_str+".zip")
-				dl_godot = false
-			dl_start = false
+		if not dl_ziping:
+			var tmp_total_size = %HTTPRequest.get_body_size()
+			var tmp_size = %HTTPRequest.get_downloaded_bytes()
+			var tmp_procent = 0
+			if tmp_size != 0:
+				tmp_procent = 100 * tmp_size / tmp_total_size
 			
-		var tmp_total_size = %HTTPRequest.get_body_size()
-		var tmp_size = %HTTPRequest.get_downloaded_bytes()
-		var tmp_procent = 0
-		if tmp_total_size != 0:
-			tmp_procent = (100/tmp_total_size)*tmp_size
-		print(tmp_size)
-		
-		$tab/Download/Box/ProgressBar.value = tmp_procent
+			$tab/Download/Box/ProgressBar.value = tmp_procent
+			$tab/Download/Box/item/status.text = str(snappedf(tmp_size/1048576.0, 0.001)) \
+									 +"MB von "+ str(snappedf(tmp_total_size/1048576.0, 0.001)) +"MB"
+		elif zip_thread.is_alive():
+			var tmp_procent = 0
+			if zip_files_size != 0:
+				tmp_procent = 100 * zip_files.size() / zip_files_size
+			$tab/Download/Box/ProgressBar.value = tmp_procent
+			$tab/Download/Box/item/status.text = "noch "+ str(zip_files.size()) +" von "+ zip_files_size
+		else:
+			zip_thread.wait_to_finish()
+			dl_zip_next()
 
 func start_check():
 	tab = 0
-	
-	var tmp_ver_file = FileAccess.open("res://tools/godot.ver", FileAccess.READ)
-	var tmp_ver = tmp_ver_file.get_as_text()
-	tmp_ver_file.close()
-	
+	var tmp_ver = FileAccess.open(c_got_ver, FileAccess.READ).get_as_text()
 	if not tmp_ver == "":
-		var tmp_exe_str = "Godot_v"+tmp_ver+"-stable_win64.exe"
-		if FileAccess.file_exists("res://tools/"+tmp_exe_str):
+		fs_godot = "Godot_v"+tmp_ver+"-stable_win64.exe"
+		if FileAccess.file_exists(c_tools+fs_godot):
 			start_tab = 0
 		else:
 			start_tab = 1
 
-func download():
-	downloading = true
+func start_editor():
+	OS.create_process("CMD.exe", ["/C", "CD " + ProjectSettings.globalize_path("res://project") + 
+		" && START \"\" \""+ProjectSettings.globalize_path(c_tools+fs_godot)+"\" -e"])
+
+func start_project():
+	OS.create_process("CMD.exe", ["/C", "CD " + ProjectSettings.globalize_path("res://project") + 
+		" && START \"\" \""+ProjectSettings.globalize_path(c_tools+fs_godot)+"\""])
+
+func dl_start():
 	dl_godot = true
-	dl_start = true
+	dl_next()
 	tab = 1
+
+func dl_zip():
+	var err = zip_reader.open(c_tools + dl_current)
+	if err != OK:
+		return null
+	else:
+		zip_files = zip_reader.get_files()
+		zip_files_size = zip_files.size()
+		dl_zip_next()
+
+func dl_zip_next():
+	if zip_files.is_empty():
+		dl_ziping = false
+		zip_reader.close()
+		fs_root.remove("tools/" + dl_current)
+		dl_current = ""
+		zip_files_size = 0
+		dl_next()
+	else:
+		dl_ziping = true
+		zip_thread.start(Callable(self, "dl_zip_thread").bind(zip_files.pop_back()))
+
+func dl_zip_thread(file_name: String):
+	FileAccess.open(c_tools+file_name, FileAccess.WRITE).store_buffer(zip_reader.read_file(file_name))
+
+func dl_next():
+	dl_ziping = false
+	if dl_godot:
+		downloading = true
+		var tmp_ver = FileAccess.open(c_got_ver, FileAccess.READ).get_as_text()
+		if not tmp_ver == "":
+			dl_current = "Godot_v"+tmp_ver+"-stable_win64.exe.zip"
+			%HTTPRequest.download_file = "tools/" + dl_current
+			%HTTPRequest.request(c_got_web+tmp_ver+"/"+dl_current)
+		dl_godot = false
+	else:
+		downloading = false
+		start_check()
