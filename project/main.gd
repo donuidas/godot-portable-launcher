@@ -74,6 +74,9 @@ func _init():
 	if not fs_root.dir_exists("project"):
 		fs_root.make_dir("project")
 		FileAccess.open(c_root+c_proj_file, FileAccess.WRITE).close()
+	
+	if not fs_root.dir_exists("export"):
+		fs_root.make_dir("export")
 
 func _ready():
 	start_check()
