@@ -69,6 +69,32 @@ layout_mode = 2
 text = "Download
 "
 
+[node name="version" type="Control" parent="tab/start_tab"]
+visible = false
+layout_mode = 2
+
+[node name="VFlow" type="VFlowContainer" parent="tab/start_tab/version"]
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -48.0
+offset_right = 48.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="tab/start_tab/version/VFlow"]
+layout_mode = 2
+text = "Godot version:"
+
+[node name="LineEdit" type="LineEdit" parent="tab/start_tab/version/VFlow"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="tab/start_tab/version/VFlow"]
+layout_mode = 2
+text = "Fertig"
+
 [node name="Download" type="Control" parent="tab"]
 visible = false
 layout_mode = 2
@@ -106,4 +132,6 @@ layout_mode = 2
 [connection signal="pressed" from="tab/start_tab/start/VFlow/edit" to="." method="start_editor"]
 [connection signal="pressed" from="tab/start_tab/start/VFlow/start" to="." method="start_project"]
 [connection signal="pressed" from="tab/start_tab/download/VFlow/download" to="." method="dl_start"]
+[connection signal="text_changed" from="tab/start_tab/version/VFlow/LineEdit" to="." method="cfg_got_ver"]
+[connection signal="pressed" from="tab/start_tab/version/VFlow/Button" to="." method="start_check"]
 [connection signal="request_completed" from="tab/Download/HTTPRequest" to="." method="dl_zip" unbinds=4]

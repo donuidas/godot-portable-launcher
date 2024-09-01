@@ -33,7 +33,6 @@ extends Control
 			%start_tab.current_tab = value
 
 
-#static var c_root = ProjectSettings.globalize_path("res://")
 static var c_root = OS.get_executable_path().get_base_dir()
 const c_tools = "/tools/"
 const c_proj = "/project/"
@@ -58,25 +57,26 @@ var zip_files_size = 0
 
 
 func _init():
-	if fs_root.dir_exists("tools"):
-		if not FileAccess.file_exists(c_root+c_sc):
+	if not Engine.is_editor_hint():
+		if fs_root.dir_exists("tools"):
+			if not FileAccess.file_exists(c_root+c_sc):
+				FileAccess.open(c_root+c_sc, FileAccess.WRITE).close()
+			if not FileAccess.file_exists(c_root+c_got_ver):
+				FileAccess.open(c_root+c_got_ver, FileAccess.WRITE).close()
+			if not FileAccess.file_exists(c_root+c_blend_ver):
+				FileAccess.open(c_root+c_blend_ver, FileAccess.WRITE).close()
+		else:
+			fs_root.make_dir("tools")
 			FileAccess.open(c_root+c_sc, FileAccess.WRITE).close()
-		if not FileAccess.file_exists(c_root+c_got_ver):
 			FileAccess.open(c_root+c_got_ver, FileAccess.WRITE).close()
-		if not FileAccess.file_exists(c_root+c_blend_ver):
 			FileAccess.open(c_root+c_blend_ver, FileAccess.WRITE).close()
-	else:
-		fs_root.make_dir("tools")
-		FileAccess.open(c_root+c_sc, FileAccess.WRITE).close()
-		FileAccess.open(c_root+c_got_ver, FileAccess.WRITE).close()
-		FileAccess.open(c_root+c_blend_ver, FileAccess.WRITE).close()
-	
-	if not fs_root.dir_exists("project"):
-		fs_root.make_dir("project")
-		FileAccess.open(c_root+c_proj_file, FileAccess.WRITE).close()
-	
-	if not fs_root.dir_exists("export"):
-		fs_root.make_dir("export")
+		
+		if not fs_root.dir_exists("project"):
+			fs_root.make_dir("project")
+			FileAccess.open(c_root+c_proj_file, FileAccess.WRITE).close()
+		
+		if not fs_root.dir_exists("export"):
+			fs_root.make_dir("export")
 
 func _ready():
 	start_check()
@@ -112,6 +112,8 @@ func start_check():
 			start_tab = 0
 		else:
 			start_tab = 1
+	else:
+		start_tab = 2
 
 func start_editor():
 	OS.create_process("CMD.exe", ["/C", "CD " + c_root+c_proj + 
@@ -163,3 +165,6 @@ func dl_next():
 	else:
 		downloading = false
 		start_check()
+
+func cfg_got_ver(text: String):
+	FileAccess.open(c_root+c_got_ver, FileAccess.WRITE).store_string(text)
