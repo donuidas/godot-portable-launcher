@@ -20,15 +20,19 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+current_tab = 0
 tabs_visible = false
 
 [node name="start_tab" type="TabContainer" parent="tab"]
 unique_name_in_owner = true
 layout_mode = 2
+current_tab = 0
 tabs_visible = false
+metadata/_tab_index = 0
 
 [node name="start" type="Control" parent="tab/start_tab"]
 layout_mode = 2
+metadata/_tab_index = 0
 
 [node name="VFlow" type="VFlowContainer" parent="tab/start_tab/start"]
 layout_mode = 1
@@ -49,9 +53,15 @@ text = "start editor"
 layout_mode = 2
 text = "start project"
 
+[node name="config" type="Button" parent="tab/start_tab/start/VFlow"]
+layout_mode = 2
+disabled = true
+text = "settings"
+
 [node name="download" type="Control" parent="tab/start_tab"]
 visible = false
 layout_mode = 2
+metadata/_tab_index = 1
 
 [node name="VFlow" type="VFlowContainer" parent="tab/start_tab/download"]
 layout_mode = 1
@@ -66,12 +76,13 @@ grow_vertical = 2
 
 [node name="download" type="Button" parent="tab/start_tab/download/VFlow"]
 layout_mode = 2
-text = "Download
+text = "Download Godot
 "
 
 [node name="version" type="Control" parent="tab/start_tab"]
 visible = false
 layout_mode = 2
+metadata/_tab_index = 2
 
 [node name="VFlow" type="VFlowContainer" parent="tab/start_tab/version"]
 layout_mode = 1
@@ -98,6 +109,7 @@ text = "Fertig"
 [node name="Download" type="Control" parent="tab"]
 visible = false
 layout_mode = 2
+metadata/_tab_index = 1
 
 [node name="HTTPRequest" type="HTTPRequest" parent="tab/Download"]
 unique_name_in_owner = true
@@ -128,10 +140,62 @@ text = "fertig"
 [node name="Einstelungen" type="Control" parent="tab"]
 visible = false
 layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="VBox" type="VBoxContainer" parent="tab/Einstelungen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="config" type="ScrollContainer" parent="tab/Einstelungen/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBox" type="VBoxContainer" parent="tab/Einstelungen/VBox/config"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="godot_ver" type="HFlowContainer" parent="tab/Einstelungen/VBox/config/VBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="tab/Einstelungen/VBox/config/VBox/godot_ver"]
+layout_mode = 2
+text = "Godot ver"
+
+[node name="LineEdit" type="LineEdit" parent="tab/Einstelungen/VBox/config/VBox/godot_ver"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBox" type="HBoxContainer" parent="tab/Einstelungen/VBox"]
+layout_mode = 2
+
+[node name="save_config_Button" type="Button" parent="tab/Einstelungen/VBox/HBox"]
+layout_mode = 2
+text = "speichern"
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -23.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 0.360784)
+text = "0.0.2"
 
 [connection signal="pressed" from="tab/start_tab/start/VFlow/edit" to="." method="start_editor"]
 [connection signal="pressed" from="tab/start_tab/start/VFlow/start" to="." method="start_project"]
+[connection signal="pressed" from="tab/start_tab/start/VFlow/config" to="." method="open_settings"]
 [connection signal="pressed" from="tab/start_tab/download/VFlow/download" to="." method="dl_start"]
 [connection signal="text_changed" from="tab/start_tab/version/VFlow/LineEdit" to="." method="cfg_got_ver"]
 [connection signal="pressed" from="tab/start_tab/version/VFlow/Button" to="." method="start_check"]
 [connection signal="request_completed" from="tab/Download/HTTPRequest" to="." method="dl_zip" unbinds=4]
+[connection signal="pressed" from="tab/Einstelungen/VBox/HBox/save_config_Button" to="." method="save_settings"]

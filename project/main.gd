@@ -59,15 +59,15 @@ var zip_files_size = 0
 func _init():
 	if not Engine.is_editor_hint():
 		if fs_root.dir_exists("tools"):
-			if not FileAccess.file_exists(c_root+c_sc):
-				FileAccess.open(c_root+c_sc, FileAccess.WRITE).close()
+			#if not FileAccess.file_exists(c_root+c_sc):
+			#	FileAccess.open(c_root+c_sc, FileAccess.WRITE).close()
 			if not FileAccess.file_exists(c_root+c_got_ver):
 				FileAccess.open(c_root+c_got_ver, FileAccess.WRITE).close()
 			if not FileAccess.file_exists(c_root+c_blend_ver):
 				FileAccess.open(c_root+c_blend_ver, FileAccess.WRITE).close()
 		else:
 			fs_root.make_dir("tools")
-			FileAccess.open(c_root+c_sc, FileAccess.WRITE).close()
+			#FileAccess.open(c_root+c_sc, FileAccess.WRITE).close()
 			FileAccess.open(c_root+c_got_ver, FileAccess.WRITE).close()
 			FileAccess.open(c_root+c_blend_ver, FileAccess.WRITE).close()
 		
@@ -118,10 +118,12 @@ func start_check():
 func start_editor():
 	OS.create_process("CMD.exe", ["/C", "CD " + c_root+c_proj + 
 		" && START \"\" \""+c_root+c_tools+fs_godot+"\" -e"])
+	get_tree().quit()
 
 func start_project():
 	OS.create_process("CMD.exe", ["/C", "CD " + c_root+c_proj + 
 		" && START \"\" \""+c_root+c_tools+fs_godot+"\""])
+	get_tree().quit()
 
 func dl_start():
 	dl_godot = true
@@ -168,3 +170,9 @@ func dl_next():
 
 func cfg_got_ver(text: String):
 	FileAccess.open(c_root+c_got_ver, FileAccess.WRITE).store_string(text)
+
+func open_settings():
+	tab = 2
+
+func save_settings():
+	tab = 0
