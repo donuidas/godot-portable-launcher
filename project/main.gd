@@ -40,7 +40,7 @@ const c_proj_file = "/project/project.godot"
 const c_sc = "/tools/_sc_"
 const c_got_ver = "/tools/godot.ver"
 const c_blend_ver = "/tools/blender.ver"
-const c_got_web = "https://downloads.tuxfamily.org/godotengine/"
+const c_got_web = "https://github.com/godotengine/godot-builds/releases/download/" #1.0-stable/Godot_v1.0_stable_win64.exe.zip"
 
 var fs_root: DirAccess = DirAccess.open(c_root)
 var fs_godot = ""
@@ -107,13 +107,16 @@ func start_check():
 	tab = 0
 	var tmp_ver = FileAccess.open(c_root+c_got_ver, FileAccess.READ).get_as_text()
 	if not tmp_ver == "":
+		start_tab = 0
 		fs_godot = "Godot_v"+tmp_ver+"-stable_win64.exe"
 		if FileAccess.file_exists(c_root+c_tools+fs_godot):
-			start_tab = 0
+			%download.visible = false
+			%proj.visible = true
 		else:
-			start_tab = 1
+			%download.visible = true
+			%proj.visible = false
 	else:
-		start_tab = 2
+		start_tab = 1
 
 func start_editor():
 	OS.create_process("CMD.exe", ["/C", "CD " + c_root+c_proj + 
@@ -162,7 +165,7 @@ func dl_next():
 		if not tmp_ver == "":
 			dl_current = "Godot_v"+tmp_ver+"-stable_win64.exe.zip"
 			%HTTPRequest.download_file = c_root + c_tools + dl_current
-			%HTTPRequest.request(c_got_web+tmp_ver+"/"+dl_current)
+			%HTTPRequest.request(c_got_web+tmp_ver+"-stable/"+dl_current)
 		dl_godot = false
 	else:
 		downloading = false
@@ -173,6 +176,11 @@ func cfg_got_ver(text: String):
 
 func open_settings():
 	tab = 2
+	var tmp_ver = FileAccess.open(c_root+c_got_ver, FileAccess.READ).get_as_text()
+	if not tmp_ver == "":
+		%"g-ver-line".text = tmp_ver
 
 func save_settings():
 	tab = 0
+	FileAccess.open(c_root+c_got_ver, FileAccess.WRITE).store_string(%"g-ver-line".text)
+	start_check()

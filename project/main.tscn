@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dmfg0oj6vkgcr"]
 
-[ext_resource type="Script" path="res://main.gd" id="1_a00df"]
+[ext_resource type="Script" uid="uid://bwju8ccfxycdt" path="res://main.gd" id="1_a00df"]
 [ext_resource type="PackedScene" uid="uid://bjygaefx0yi67" path="res://item.tscn" id="2_wt56x"]
 
 [node name="main" type="Control"]
@@ -45,44 +45,32 @@ offset_right = 48.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="edit" type="Button" parent="tab/start_tab/start/VFlow"]
+[node name="download" type="Button" parent="tab/start_tab/start/VFlow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Download Godot
+"
+
+[node name="proj" type="VBoxContainer" parent="tab/start_tab/start/VFlow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="edit" type="Button" parent="tab/start_tab/start/VFlow/proj"]
 layout_mode = 2
 text = "start editor"
 
-[node name="start" type="Button" parent="tab/start_tab/start/VFlow"]
+[node name="start" type="Button" parent="tab/start_tab/start/VFlow/proj"]
 layout_mode = 2
 text = "start project"
 
 [node name="config" type="Button" parent="tab/start_tab/start/VFlow"]
 layout_mode = 2
-disabled = true
 text = "settings"
-
-[node name="download" type="Control" parent="tab/start_tab"]
-visible = false
-layout_mode = 2
-metadata/_tab_index = 1
-
-[node name="VFlow" type="VFlowContainer" parent="tab/start_tab/download"]
-layout_mode = 1
-anchors_preset = 13
-anchor_left = 0.5
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -48.0
-offset_right = 48.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="download" type="Button" parent="tab/start_tab/download/VFlow"]
-layout_mode = 2
-text = "Download Godot
-"
 
 [node name="version" type="Control" parent="tab/start_tab"]
 visible = false
 layout_mode = 2
-metadata/_tab_index = 2
+metadata/_tab_index = 1
 
 [node name="VFlow" type="VFlowContainer" parent="tab/start_tab/version"]
 layout_mode = 1
@@ -166,7 +154,8 @@ layout_mode = 2
 layout_mode = 2
 text = "Godot ver"
 
-[node name="LineEdit" type="LineEdit" parent="tab/Einstelungen/VBox/config/VBox/godot_ver"]
+[node name="g-ver-line" type="LineEdit" parent="tab/Einstelungen/VBox/config/VBox/godot_ver"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -189,12 +178,12 @@ offset_top = -23.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 0.360784)
-text = "0.0.2"
+text = "0.0.3"
 
-[connection signal="pressed" from="tab/start_tab/start/VFlow/edit" to="." method="start_editor"]
-[connection signal="pressed" from="tab/start_tab/start/VFlow/start" to="." method="start_project"]
+[connection signal="pressed" from="tab/start_tab/start/VFlow/download" to="." method="dl_start"]
+[connection signal="pressed" from="tab/start_tab/start/VFlow/proj/edit" to="." method="start_editor"]
+[connection signal="pressed" from="tab/start_tab/start/VFlow/proj/start" to="." method="start_project"]
 [connection signal="pressed" from="tab/start_tab/start/VFlow/config" to="." method="open_settings"]
-[connection signal="pressed" from="tab/start_tab/download/VFlow/download" to="." method="dl_start"]
 [connection signal="text_changed" from="tab/start_tab/version/VFlow/LineEdit" to="." method="cfg_got_ver"]
 [connection signal="pressed" from="tab/start_tab/version/VFlow/Button" to="." method="start_check"]
 [connection signal="request_completed" from="tab/Download/HTTPRequest" to="." method="dl_zip" unbinds=4]
