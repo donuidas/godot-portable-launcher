@@ -2,6 +2,13 @@
 extends Control
 
 
+enum {
+	LOAD,
+	START,
+	DL,
+	CFG
+}
+
 @export var tab = 0:
 	get:
 		if is_node_ready():
@@ -16,21 +23,6 @@ extends Control
 			tab = value
 			await ready
 			%tab.current_tab = value
-		
-@export var start_tab = 0:
-	get:
-		if is_node_ready():
-			return %start_tab.current_tab
-		else:
-			return start_tab
-	set(value):
-		if is_node_ready():
-			start_tab = value
-			%start_tab.current_tab = value
-		else:
-			start_tab = value
-			await ready
-			%start_tab.current_tab = value
 
 
 static var c_root = OS.get_executable_path().get_base_dir()
@@ -38,12 +30,13 @@ const c_tools = "/tools/"
 const c_proj = "/project/"
 const c_proj_file = "/project/project.godot"
 const c_sc = "/tools/_sc_"
-const c_got_ver = "/tools/godot.ver"
-const c_blend_ver = "/tools/blender.ver"
+const c_config = "/config.ini"
 const c_got_web = "https://github.com/godotengine/godot-builds/releases/download/" #1.0-stable/Godot_v1.0_stable_win64.exe.zip"
 
 var fs_root: DirAccess = DirAccess.open(c_root)
 var fs_godot = ""
+
+var cfg_main: ConfigFile = ConfigFile.new()
 
 var downloading = false
 var dl_ziping = false
@@ -58,18 +51,14 @@ var zip_files_size = 0
 
 func _init():
 	if not Engine.is_editor_hint():
+		var err = 0
+		
 		if fs_root.dir_exists("tools"):
+			pass
 			#if not FileAccess.file_exists(c_root+c_sc):
 			#	FileAccess.open(c_root+c_sc, FileAccess.WRITE).close()
-			if not FileAccess.file_exists(c_root+c_got_ver):
-				FileAccess.open(c_root+c_got_ver, FileAccess.WRITE).close()
-			if not FileAccess.file_exists(c_root+c_blend_ver):
-				FileAccess.open(c_root+c_blend_ver, FileAccess.WRITE).close()
 		else:
 			fs_root.make_dir("tools")
-			#FileAccess.open(c_root+c_sc, FileAccess.WRITE).close()
-			FileAccess.open(c_root+c_got_ver, FileAccess.WRITE).close()
-			FileAccess.open(c_root+c_blend_ver, FileAccess.WRITE).close()
 		
 		if not fs_root.dir_exists("project"):
 			fs_root.make_dir("project")
@@ -77,9 +66,24 @@ func _init():
 		
 		if not fs_root.dir_exists("export"):
 			fs_root.make_dir("export")
+		
+		if FileAccess.file_exists(c_root+c_config):
+			err = cfg_main.load(c_root+c_config)
+			#if err == ERR_FILE_CANT_OPEN:
+				#fs_root.remove(c_root+c_config)
+				#cfg_main.save(c_root+c_config)
+		else:
+			cfg_main.save(c_root+c_config)
+		
+		if cfg_main.get_value("godot", "portable"):
+			FileAccess.open(c_root+c_sc, FileAccess.WRITE).close()
+		else:
+			fs_root.remove(c_root+c_sc)
 
 func _ready():
-	start_check()
+	if not Engine.is_editor_hint():
+		await ready
+		start_check()
 
 func _process(delta):
 	if downloading:
@@ -104,19 +108,25 @@ func _process(delta):
 			dl_zip_next()
 
 func start_check():
-	tab = 0
-	var tmp_ver = FileAccess.open(c_root+c_got_ver, FileAccess.READ).get_as_text()
+	var tmp_ver = cfg_main.get_value("godot", "ver", "")
 	if not tmp_ver == "":
-		start_tab = 0
+		%err.visible = false
 		fs_godot = "Godot_v"+tmp_ver+"-stable_win64.exe"
 		if FileAccess.file_exists(c_root+c_tools+fs_godot):
 			%download.visible = false
 			%proj.visible = true
+			if cfg_main.get_value("godot", "autostart", false):
+				self.start_editor()
+				return
 		else:
 			%download.visible = true
 			%proj.visible = false
 	else:
-		start_tab = 1
+		%download.visible = false
+		%proj.visible = false
+		%err.visible = true
+		%err_ver.visible = true
+	tab = START
 
 func start_editor():
 	OS.create_process("CMD.exe", ["/C", "CD " + c_root+c_proj + 
@@ -131,7 +141,7 @@ func start_project():
 func dl_start():
 	dl_godot = true
 	dl_next()
-	tab = 1
+	tab = DL
 
 func dl_zip():
 	var err = zip_reader.open(c_root + c_tools + dl_current)
@@ -161,7 +171,7 @@ func dl_next():
 	dl_ziping = false
 	if dl_godot:
 		downloading = true
-		var tmp_ver = FileAccess.open(c_root+c_got_ver, FileAccess.READ).get_as_text()
+		var tmp_ver = cfg_main.get_value("godot", "ver", "")
 		if not tmp_ver == "":
 			dl_current = "Godot_v"+tmp_ver+"-stable_win64.exe.zip"
 			%HTTPRequest.download_file = c_root + c_tools + dl_current
@@ -171,16 +181,26 @@ func dl_next():
 		downloading = false
 		start_check()
 
-func cfg_got_ver(text: String):
-	FileAccess.open(c_root+c_got_ver, FileAccess.WRITE).store_string(text)
+func cfg_open():
+	%"g-ver-setting".text = cfg_main.get_value("godot", "ver", "")
+	%"g-autostart-setting".button_pressed = cfg_main.get_value("godot", "autostart", false)
+	%"g-portable-setting".button_pressed = cfg_main.get_value("godot", "portable", false)
+	
+	tab = CFG
 
-func open_settings():
-	tab = 2
-	var tmp_ver = FileAccess.open(c_root+c_got_ver, FileAccess.READ).get_as_text()
-	if not tmp_ver == "":
-		%"g-ver-line".text = tmp_ver
+func cfg_save():
+	cfg_main.set_value("godot", "ver", %"g-ver-setting".text)
+	cfg_main.set_value("godot", "autostart", %"g-autostart-setting".button_pressed)
+	cfg_main.set_value("godot", "portable", %"g-portable-setting".button_pressed)
+	
+	if %"g-portable-setting".button_pressed:
+		FileAccess.open(c_root+c_sc, FileAccess.WRITE).close()
+	else:
+		fs_root.remove(c_root+c_sc)
+	
+	cfg_main.save(c_root+c_config)
+	
+	start_check()
 
-func save_settings():
-	tab = 0
-	FileAccess.open(c_root+c_got_ver, FileAccess.WRITE).store_string(%"g-ver-line".text)
+func cfg_cancel():
 	start_check()
