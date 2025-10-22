@@ -30,11 +30,13 @@ const c_tools = "/tools/"
 const c_proj = "/project/"
 const c_proj_file = "/project/project.godot"
 const c_sc = "/tools/_sc_"
+const c_blender = "/tools/blender/"
 const c_config = "/config.ini"
 const c_got_web = "https://github.com/godotengine/godot-builds/releases/download/" #1.0-stable/Godot_v1.0_stable_win64.exe.zip"
 
 var fs_root: DirAccess = DirAccess.open(c_root)
 var fs_godot = ""
+var fs_blender = ""
 
 var cfg_main: ConfigFile = ConfigFile.new()
 
@@ -85,7 +87,7 @@ func _ready():
 		await ready
 		start_check()
 
-func _process(delta):
+func _process(_delta):
 	if downloading:
 		if not dl_ziping:
 			var tmp_total_size = %HTTPRequest.get_body_size()
@@ -100,6 +102,7 @@ func _process(delta):
 		elif zip_thread.is_alive():
 			var tmp_procent = 0
 			if zip_files_size != 0:
+				@warning_ignore("integer_division")
 				tmp_procent = 100 * zip_files.size() / zip_files_size
 			$tab/Download/Box/ProgressBar.value = tmp_procent
 			$tab/Download/Box/item/status.text = "noch "+ str(zip_files.size()) +" von "+ str(zip_files_size)
@@ -108,10 +111,22 @@ func _process(delta):
 			dl_zip_next()
 
 func start_check():
-	var tmp_ver = cfg_main.get_value("godot", "ver", "")
-	if not tmp_ver == "":
+	var tmp_g_ver = cfg_main.get_value("godot", "ver", "")
+	if not tmp_g_ver == "":
 		%err.visible = false
-		fs_godot = "Godot_v"+tmp_ver+"-stable_win64.exe"
+		
+		if cfg_main.get_value("blender", "integrate"):
+			var tmp_b_ver = cfg_main.get_value("blender", "ver", "")
+			if not tmp_b_ver == "":
+				fs_blender = "blender-"+tmp_b_ver+"-windows-x64/blender.exe"
+				if FileAccess.file_exists(c_root+c_tools+fs_blender):
+					%"blender-start".visible = true
+				else:
+					%"blender-start".visible = false
+		else:
+				%"blender-start".visible = false
+		
+		fs_godot = "Godot_v"+tmp_g_ver+"-stable_win64.exe"
 		if FileAccess.file_exists(c_root+c_tools+fs_godot):
 			%download.visible = false
 			%proj.visible = true
@@ -126,9 +141,13 @@ func start_check():
 		%proj.visible = false
 		%err.visible = true
 		%err_ver.visible = true
+		%"blender-start".visible = false
 	tab = START
 
 func start_editor():
+	if cfg_main.get_value("blender", "integrate"):
+		if cfg_main.get_value("godot", "portable"):
+			pass
 	OS.create_process("CMD.exe", ["/C", "CD " + c_root+c_proj + 
 		" && START \"\" \""+c_root+c_tools+fs_godot+"\" -e"])
 	get_tree().quit()
@@ -138,11 +157,16 @@ func start_project():
 		" && START \"\" \""+c_root+c_tools+fs_godot+"\""])
 	get_tree().quit()
 
+func start_blender() -> void:
+	OS.create_process("CMD.exe", ["/C", "CD " + c_root+c_proj + 
+		" && START \"\" \"" +c_root+c_tools+fs_blender+ "\""])
+	get_tree().quit()
+
 func dl_start():
 	dl_godot = true
 	dl_next()
 	tab = DL
-
+	
 func dl_zip():
 	var err = zip_reader.open(c_root + c_tools + dl_current)
 	if err != OK:
@@ -185,6 +209,8 @@ func cfg_open():
 	%"g-ver-setting".text = cfg_main.get_value("godot", "ver", "")
 	%"g-autostart-setting".button_pressed = cfg_main.get_value("godot", "autostart", false)
 	%"g-portable-setting".button_pressed = cfg_main.get_value("godot", "portable", false)
+	%"b-ver-setting".text = cfg_main.get_value("blender", "ver", "")
+	%"b-integrate-setting".button_pressed = cfg_main.get_value("blender", "integrate", false)
 	
 	tab = CFG
 
@@ -192,6 +218,8 @@ func cfg_save():
 	cfg_main.set_value("godot", "ver", %"g-ver-setting".text)
 	cfg_main.set_value("godot", "autostart", %"g-autostart-setting".button_pressed)
 	cfg_main.set_value("godot", "portable", %"g-portable-setting".button_pressed)
+	cfg_main.set_value("blender", "ver", %"b-ver-setting".text)
+	cfg_main.set_value("blender", "integrate", %"b-integrate-setting".button_pressed)
 	
 	if %"g-portable-setting".button_pressed:
 		FileAccess.open(c_root+c_sc, FileAccess.WRITE).close()

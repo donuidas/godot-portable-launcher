@@ -68,6 +68,11 @@ layout_mode = 2
 text = "Download Godot
 "
 
+[node name="blender-download" type="Button" parent="tab/start/VFlow"]
+visible = false
+layout_mode = 2
+text = "Download Blender"
+
 [node name="proj" type="VBoxContainer" parent="tab/start/VFlow"]
 unique_name_in_owner = true
 visible = false
@@ -75,15 +80,21 @@ layout_mode = 2
 
 [node name="edit" type="Button" parent="tab/start/VFlow/proj"]
 layout_mode = 2
-text = "start editor"
+text = "Edit Project"
 
 [node name="start" type="Button" parent="tab/start/VFlow/proj"]
 layout_mode = 2
-text = "start project"
+text = "Start Project"
+
+[node name="blender-start" type="Button" parent="tab/start/VFlow"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "Start Blender"
 
 [node name="config" type="Button" parent="tab/start/VFlow"]
 layout_mode = 2
-text = "settings"
+text = "Settings"
 
 [node name="Download" type="Control" parent="tab"]
 visible = false
@@ -164,6 +175,23 @@ text = "Editor portable"
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="b-ver-label" type="Label" parent="tab/Einstelungen/VBox/config/Grid"]
+layout_mode = 2
+text = "Blender ver"
+
+[node name="b-ver-setting" type="LineEdit" parent="tab/Einstelungen/VBox/config/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="b-integrate-label" type="Label" parent="tab/Einstelungen/VBox/config/Grid"]
+layout_mode = 2
+text = "Integrate Blender"
+
+[node name="b-integrate-setting" type="CheckBox" parent="tab/Einstelungen/VBox/config/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="HBox" type="HBoxContainer" parent="tab/Einstelungen/VBox"]
 layout_mode = 2
 
@@ -187,11 +215,12 @@ offset_top = -23.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 0.360784)
-text = "0.0.4"
+text = "0.0.5"
 
 [connection signal="pressed" from="tab/start/VFlow/download" to="." method="dl_start"]
 [connection signal="pressed" from="tab/start/VFlow/proj/edit" to="." method="start_editor"]
 [connection signal="pressed" from="tab/start/VFlow/proj/start" to="." method="start_project"]
+[connection signal="pressed" from="tab/start/VFlow/blender-start" to="." method="start_blender"]
 [connection signal="pressed" from="tab/start/VFlow/config" to="." method="cfg_open"]
 [connection signal="request_completed" from="tab/Download/HTTPRequest" to="." method="dl_zip" unbinds=4]
 [connection signal="pressed" from="tab/Einstelungen/VBox/HBox/save_config_Button" to="." method="cfg_save"]
