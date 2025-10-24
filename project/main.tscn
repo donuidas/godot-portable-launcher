@@ -40,7 +40,7 @@ offset_right = 20.0
 offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
-text = "Laden..."
+text = "Loading..."
 
 [node name="start" type="VBoxContainer" parent="tab"]
 visible = false
@@ -54,7 +54,7 @@ layout_mode = 2
 [node name="err_ver" type="Label" parent="tab/start/err"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Godot version zuerst einstellen"
+text = "Set Godot version first"
 
 [node name="VFlow" type="VFlowContainer" parent="tab/start"]
 layout_mode = 2
@@ -197,11 +197,11 @@ layout_mode = 2
 
 [node name="save_config_Button" type="Button" parent="tab/Einstelungen/VBox/HBox"]
 layout_mode = 2
-text = "speichern"
+text = "Save"
 
 [node name="cancel_config_Button" type="Button" parent="tab/Einstelungen/VBox/HBox"]
 layout_mode = 2
-text = "abbrechen"
+text = "Cancel"
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 1

@@ -36,6 +36,7 @@ const c_got_web = "https://github.com/godotengine/godot-builds/releases/download
 
 var fs_root: DirAccess = DirAccess.open(c_root)
 var fs_godot = ""
+var fs_godot_cfg = ""
 var fs_blender = ""
 
 var cfg_main: ConfigFile = ConfigFile.new()
@@ -111,7 +112,7 @@ func _process(_delta):
 			dl_zip_next()
 
 func start_check():
-	var tmp_g_ver = cfg_main.get_value("godot", "ver", "")
+	var tmp_g_ver: String = cfg_main.get_value("godot", "ver", "")
 	if not tmp_g_ver == "":
 		%err.visible = false
 		
@@ -127,6 +128,7 @@ func start_check():
 				%"blender-start".visible = false
 		
 		fs_godot = "Godot_v"+tmp_g_ver+"-stable_win64.exe"
+		fs_godot_cfg = "editor_data/editor_settings-"+tmp_g_ver.left(3)+".tres"
 		if FileAccess.file_exists(c_root+c_tools+fs_godot):
 			%download.visible = false
 			%proj.visible = true
@@ -147,10 +149,84 @@ func start_check():
 func start_editor():
 	if cfg_main.get_value("blender", "integrate"):
 		if cfg_main.get_value("godot", "portable"):
-			pass
+			_change_editorsettings_file(
+				c_root+c_tools+fs_godot_cfg, 
+				{
+					"filesystem/import/blender/blender_path": "\""+c_root+c_tools+fs_blender+"\"", 
+					"filesystem/external_programs/3d_model_editor": "\""+c_root+c_tools+fs_blender+"\""
+				}
+			)
 	OS.create_process("CMD.exe", ["/C", "CD " + c_root+c_proj + 
 		" && START \"\" \""+c_root+c_tools+fs_godot+"\" -e"])
 	get_tree().quit()
+
+func _change_editorsettings_file(path: String, updates: Dictionary) -> void:
+	# updates = {"key/path": "value", ...}
+	var header := ""
+	var format_version := 3
+	var resource_section_found := false
+	var lines: PackedStringArray = []
+	
+	# --- Datei lesen oder Grundgerüst anlegen ---
+	if FileAccess.file_exists(path):
+		var file_text := FileAccess.get_file_as_string(path)
+		lines = file_text.split("\n")
+		
+		# Header und Format erkennen
+		for i in range(lines.size()):
+			var trimmed := lines[i].strip_edges()
+			if trimmed.begins_with("[gd_resource"):
+				header = lines[i]
+				# Formatnummer extrahieren
+				var match2 := RegEx.new()
+				match2.compile("format=(\\d+)")
+				var m := match2.search(trimmed)
+				if m:
+					format_version = int(m.get_string(1))
+				lines.remove_at(0)
+			elif trimmed.begins_with("[resource]"):
+				resource_section_found = true
+				# Rest behalten, da danach Key-Value-Zeilen kommen
+	else:
+		# Keine Datei: Grundgerüst erzeugen
+		header = "[gd_resource type=\"EditorSettings\" format=3]"
+		lines = ["[resource]"]
+		resource_section_found = true
+	
+	# --- Sicherstellen, dass Header vorhanden ist ---
+	if header == "":
+		header = "[gd_resource type=\"EditorSettings\" format=%d]" % format_version
+	
+	# --- Key-Zeilen suchen und ersetzen ---
+	var found_keys := {}
+	for i in range(lines.size()):
+		var line := lines[i].strip_edges()
+		if line == "" or line.begins_with(";"):
+			continue
+		for key in updates.keys():
+			if line.begins_with(key + " "):
+				lines[i] = key + " = " + updates[key]
+				found_keys[key] = true
+	
+	# --- Fehlende Keys am Ende anhängen ---
+	if not resource_section_found:
+		lines.append("[resource]")
+	for key in updates.keys():
+		if not found_keys.has(key):
+			lines.append(key + " = " + updates[key])
+	
+	# --- Überflüssige Leerzeilen entfernen ---
+	while lines.size() > 0 and lines[-1].strip_edges() == "":
+		#lines.pop_back()
+		lines.remove_at(lines.size()-1)
+	
+	# --- Zusammenbauen ---
+	var new_text := header + "\n" + String("\n").join(lines) + "\n"
+	
+	# --- Schreiben ---
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	file.store_string(new_text)
+	file.close()
 
 func start_project():
 	OS.create_process("CMD.exe", ["/C", "CD " + c_root+c_proj + 

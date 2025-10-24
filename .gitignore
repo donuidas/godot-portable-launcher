@@ -1,12 +1,14 @@
-# Godot 4+ specific ignores
+# Godot 4+
 .godot/
 
-# Godot-specific ignores
+# Godot 3-
 .import/
+
+# Godot
 export.cfg
 # export_presets.cfg
 
-# Mono-specific ignores
+# Godot-Mono
 .mono/
 data_*/
 mono_crash.*.json
@@ -14,7 +16,7 @@ mono_crash.*.json
 # Windows
 desktop.ini
 
-# project
+# project and godot-portable-launcher
 tools/Godot*.exe
 tools/Godot*.cmd
 export/
@@ -24,6 +26,7 @@ tools/blender*/
 *.blend1
 
 # Godot Editor specific ignores
-tools/editor_data/*cache
-tools/editor_data/recent_dirs
-tools/editor_data/export_templates
+tools/editor_data/
+#tools/editor_data/*cache
+#tools/editor_data/recent_dirs
+#tools/editor_data/export_templates
