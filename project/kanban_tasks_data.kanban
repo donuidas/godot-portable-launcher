@@ -10,12 +10,19 @@
 		{
 			"uuid": "b6b18d67-3e06-494d-921a-ab0f1aa50627",
 			"title": "Todo",
-			"tasks": []
+			"tasks": [
+				"42cf05e2-5bd0-40f0-8183-615a30edf5ed",
+				"f1fa1e6e-de24-40f8-885b-0d052fbdc001",
+				"bc4e9cc5-ed47-451d-9e9c-1d58778b6e18",
+				"e6ca5f50-0cd4-4bbd-8b93-5c04f249de56"
+			]
 		},
 		{
 			"uuid": "2535756d-2250-40bb-851a-233884207f9c",
 			"title": "Doing",
-			"tasks": []
+			"tasks": [
+				"e3518a80-19e2-41b9-9946-fad5b101ecdf"
+			]
 		},
 		{
 			"uuid": "036a8012-a3bb-446d-a321-a3057294745d",
@@ -23,7 +30,60 @@
 			"tasks": []
 		}
 	],
-	"tasks": [],
+	"tasks": [
+		{
+			"uuid": "42cf05e2-5bd0-40f0-8183-615a30edf5ed",
+			"title": "auf ver format prüfen",
+			"description": "",
+			"category": "6116a2ff-e16e-4401-92f0-e49559636172",
+			"steps": []
+		},
+		{
+			"uuid": "f1fa1e6e-de24-40f8-885b-0d052fbdc001",
+			"title": "ausschaltel von integration beim save von cfg nach datei speichern ",
+			"description": "",
+			"category": "6116a2ff-e16e-4401-92f0-e49559636172",
+			"steps": []
+		},
+		{
+			"uuid": "e3518a80-19e2-41b9-9946-fad5b101ecdf",
+			"title": "auslagern",
+			"description": "",
+			"category": "6116a2ff-e16e-4401-92f0-e49559636172",
+			"steps": [
+				{
+					"details": "download",
+					"done": false
+				},
+				{
+					"details": "zip",
+					"done": false
+				},
+				{
+					"details": "editorsettings",
+					"done": false
+				},
+				{
+					"details": "cfg",
+					"done": false
+				}
+			]
+		},
+		{
+			"uuid": "bc4e9cc5-ed47-451d-9e9c-1d58778b6e18",
+			"title": "entpacken (viele kleine dateien) optimieren",
+			"description": "",
+			"category": "6116a2ff-e16e-4401-92f0-e49559636172",
+			"steps": []
+		},
+		{
+			"uuid": "e6ca5f50-0cd4-4bbd-8b93-5c04f249de56",
+			"title": "blender portable machbar",
+			"description": "",
+			"category": "6116a2ff-e16e-4401-92f0-e49559636172",
+			"steps": []
+		}
+	],
 	"layout": {
 		"columns": [
 			[

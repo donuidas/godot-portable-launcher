@@ -69,6 +69,7 @@ text = "Download Godot
 "
 
 [node name="blender-download" type="Button" parent="tab/start/VFlow"]
+unique_name_in_owner = true
 visible = false
 layout_mode = 2
 text = "Download Blender"
@@ -217,7 +218,8 @@ grow_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 0.360784)
 text = "0.0.5"
 
-[connection signal="pressed" from="tab/start/VFlow/download" to="." method="dl_start"]
+[connection signal="pressed" from="tab/start/VFlow/download" to="." method="dl_start_godot"]
+[connection signal="pressed" from="tab/start/VFlow/blender-download" to="." method="dl_start_blender"]
 [connection signal="pressed" from="tab/start/VFlow/proj/edit" to="." method="start_editor"]
 [connection signal="pressed" from="tab/start/VFlow/proj/start" to="." method="start_project"]
 [connection signal="pressed" from="tab/start/VFlow/blender-start" to="." method="start_blender"]

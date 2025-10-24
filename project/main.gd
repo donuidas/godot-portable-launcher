@@ -33,6 +33,7 @@ const c_sc = "/tools/_sc_"
 const c_blender = "/tools/blender/"
 const c_config = "/config.ini"
 const c_got_web = "https://github.com/godotengine/godot-builds/releases/download/" #1.0-stable/Godot_v1.0_stable_win64.exe.zip"
+const c_blend_web = "https://download.blender.org/release/"
 
 var fs_root: DirAccess = DirAccess.open(c_root)
 var fs_godot = ""
@@ -44,6 +45,7 @@ var cfg_main: ConfigFile = ConfigFile.new()
 var downloading = false
 var dl_ziping = false
 var dl_godot = false
+var dl_blender = false
 var dl_current = ""
 
 var zip_thread = Thread.new()
@@ -100,6 +102,12 @@ func _process(_delta):
 			$tab/Download/Box/ProgressBar.value = tmp_procent
 			$tab/Download/Box/item/status.text = str(snappedf(tmp_size/1048576.0, 0.001)) \
 									 +"MB von "+ str(snappedf(tmp_total_size/1048576.0, 0.001)) +"MB"
+			if dl_godot:
+				$tab/Download/Box/item/name.text = "Godot"
+			elif dl_blender:
+				$tab/Download/Box/item/name.text = "Blender"
+			else:
+				$tab/Download/Box/item/name.text = "?"
 		elif zip_thread.is_alive():
 			var tmp_procent = 0
 			if zip_files_size != 0:
@@ -112,21 +120,23 @@ func _process(_delta):
 			dl_zip_next()
 
 func start_check():
+	var tmp_b_ver = cfg_main.get_value("blender", "ver", "")
+	if not tmp_b_ver == "":
+		fs_blender = "blender-"+tmp_b_ver+"-windows-x64/blender.exe"
+		if FileAccess.file_exists(c_root+c_tools+fs_blender):
+			%"blender-start".visible = true
+			%"blender-download".visible = false
+		else:
+			%"blender-start".visible = false
+			%"blender-download".visible = true
+	else:
+		fs_blender = ""
+		%"blender-start".visible = false
+		%"blender-download".visible = false
+	
 	var tmp_g_ver: String = cfg_main.get_value("godot", "ver", "")
 	if not tmp_g_ver == "":
 		%err.visible = false
-		
-		if cfg_main.get_value("blender", "integrate"):
-			var tmp_b_ver = cfg_main.get_value("blender", "ver", "")
-			if not tmp_b_ver == "":
-				fs_blender = "blender-"+tmp_b_ver+"-windows-x64/blender.exe"
-				if FileAccess.file_exists(c_root+c_tools+fs_blender):
-					%"blender-start".visible = true
-				else:
-					%"blender-start".visible = false
-		else:
-				%"blender-start".visible = false
-		
 		fs_godot = "Godot_v"+tmp_g_ver+"-stable_win64.exe"
 		fs_godot_cfg = "editor_data/editor_settings-"+tmp_g_ver.left(3)+".tres"
 		if FileAccess.file_exists(c_root+c_tools+fs_godot):
@@ -139,23 +149,33 @@ func start_check():
 			%download.visible = true
 			%proj.visible = false
 	else:
+		fs_godot = ""
+		fs_godot_cfg = ""
 		%download.visible = false
 		%proj.visible = false
 		%err.visible = true
 		%err_ver.visible = true
-		%"blender-start".visible = false
 	tab = START
 
 func start_editor():
 	if cfg_main.get_value("blender", "integrate"):
 		if cfg_main.get_value("godot", "portable"):
-			_change_editorsettings_file(
-				c_root+c_tools+fs_godot_cfg, 
-				{
-					"filesystem/import/blender/blender_path": "\""+c_root+c_tools+fs_blender+"\"", 
-					"filesystem/external_programs/3d_model_editor": "\""+c_root+c_tools+fs_blender+"\""
-				}
-			)
+			if fs_blender == "":
+				_change_editorsettings_file(
+					c_root+c_tools+fs_godot_cfg, 
+					{
+						"filesystem/import/blender/blender_path": "\"\"", 
+						"filesystem/external_programs/3d_model_editor": "\"\""
+					}
+				)
+			else:
+				_change_editorsettings_file(
+					c_root+c_tools+fs_godot_cfg, 
+					{
+						"filesystem/import/blender/blender_path": "\""+c_root+c_tools+fs_blender+"\"", 
+						"filesystem/external_programs/3d_model_editor": "\""+c_root+c_tools+fs_blender+"\""
+					}
+				)
 	OS.create_process("CMD.exe", ["/C", "CD " + c_root+c_proj + 
 		" && START \"\" \""+c_root+c_tools+fs_godot+"\" -e"])
 	get_tree().quit()
@@ -183,10 +203,10 @@ func _change_editorsettings_file(path: String, updates: Dictionary) -> void:
 				var m := match2.search(trimmed)
 				if m:
 					format_version = int(m.get_string(1))
-				lines.remove_at(0)
 			elif trimmed.begins_with("[resource]"):
 				resource_section_found = true
 				# Rest behalten, da danach Key-Value-Zeilen kommen
+		lines.remove_at(0)
 	else:
 		# Keine Datei: Grundgerüst erzeugen
 		header = "[gd_resource type=\"EditorSettings\" format=3]"
@@ -224,6 +244,8 @@ func _change_editorsettings_file(path: String, updates: Dictionary) -> void:
 	var new_text := header + "\n" + String("\n").join(lines) + "\n"
 	
 	# --- Schreiben ---
+	if not fs_root.dir_exists(c_root+c_tools+"editor_data/"):
+		fs_root.make_dir(c_root+c_tools+"editor_data/")
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	file.store_string(new_text)
 	file.close()
@@ -238,11 +260,38 @@ func start_blender() -> void:
 		" && START \"\" \"" +c_root+c_tools+fs_blender+ "\""])
 	get_tree().quit()
 
-func dl_start():
+func dl_start_godot():
 	dl_godot = true
 	dl_next()
 	tab = DL
-	
+
+func dl_start_blender():
+	dl_blender = true
+	dl_next()
+	tab = DL
+
+func dl_next():
+	dl_ziping = false
+	if dl_godot:
+		downloading = true
+		var tmp_ver = cfg_main.get_value("godot", "ver", "")
+		if not tmp_ver == "":
+			dl_current = "Godot_v"+tmp_ver+"-stable_win64.exe.zip"
+			%HTTPRequest.download_file = c_root + c_tools + dl_current
+			%HTTPRequest.request(c_got_web+tmp_ver+"-stable/"+dl_current)
+		dl_godot = false
+	elif dl_blender:
+		downloading = true
+		var tmp_ver:String = cfg_main.get_value("blender", "ver", "")
+		if not tmp_ver == "":
+			dl_current = "blender-"+tmp_ver+"-windows-x64.zip"
+			%HTTPRequest.download_file = c_root + c_tools + dl_current
+			%HTTPRequest.request(c_blend_web+"Blender"+tmp_ver.left(3)+"/"+dl_current)
+		dl_blender = false
+	else:
+		downloading = false
+		start_check()
+
 func dl_zip():
 	var err = zip_reader.open(c_root + c_tools + dl_current)
 	if err != OK:
@@ -265,21 +314,14 @@ func dl_zip_next():
 		zip_thread.start(Callable(self, "dl_zip_thread").bind(zip_files.pop_back()))
 
 func dl_zip_thread(file_name: String):
-	FileAccess.open(c_root+c_tools+file_name, FileAccess.WRITE).store_buffer(zip_reader.read_file(file_name))
-
-func dl_next():
-	dl_ziping = false
-	if dl_godot:
-		downloading = true
-		var tmp_ver = cfg_main.get_value("godot", "ver", "")
-		if not tmp_ver == "":
-			dl_current = "Godot_v"+tmp_ver+"-stable_win64.exe.zip"
-			%HTTPRequest.download_file = c_root + c_tools + dl_current
-			%HTTPRequest.request(c_got_web+tmp_ver+"-stable/"+dl_current)
-		dl_godot = false
-	else:
-		downloading = false
-		start_check()
+	if file_name.right(1) != "/":
+		var tmp_dir = file_name.get_base_dir().split("/")
+		var tmp_comp_dir = c_root+c_tools
+		for dir in tmp_dir:
+			tmp_comp_dir += dir+"/"
+			if not fs_root.dir_exists(tmp_comp_dir):
+				fs_root.make_dir(tmp_comp_dir)
+		FileAccess.open(c_root+c_tools+file_name, FileAccess.WRITE).store_buffer(zip_reader.read_file(file_name))
 
 func cfg_open():
 	%"g-ver-setting".text = cfg_main.get_value("godot", "ver", "")
