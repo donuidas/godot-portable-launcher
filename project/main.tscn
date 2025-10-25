@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://dmfg0oj6vkgcr"]
+[gd_scene load_steps=4 format=3 uid="uid://dmfg0oj6vkgcr"]
 
 [ext_resource type="Script" uid="uid://bwju8ccfxycdt" path="res://main.gd" id="1_a00df"]
+[ext_resource type="Script" uid="uid://bqi8b3qsdm0r6" path="res://downloader.gd" id="2_h2yge"]
 [ext_resource type="PackedScene" uid="uid://bjygaefx0yi67" path="res://item.tscn" id="2_wt56x"]
 
 [node name="main" type="Control"]
@@ -11,6 +12,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_a00df")
+
+[node name="downloader" type="HTTPRequest" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2_h2yge")
 
 [node name="tab" type="TabContainer" parent="."]
 unique_name_in_owner = true
@@ -218,12 +223,12 @@ grow_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 0.360784)
 text = "0.0.5"
 
+[connection signal="request_completed" from="downloader" to="downloader" method="dl_zip" unbinds=4]
 [connection signal="pressed" from="tab/start/VFlow/download" to="." method="dl_start_godot"]
 [connection signal="pressed" from="tab/start/VFlow/blender-download" to="." method="dl_start_blender"]
 [connection signal="pressed" from="tab/start/VFlow/proj/edit" to="." method="start_editor"]
 [connection signal="pressed" from="tab/start/VFlow/proj/start" to="." method="start_project"]
 [connection signal="pressed" from="tab/start/VFlow/blender-start" to="." method="start_blender"]
 [connection signal="pressed" from="tab/start/VFlow/config" to="." method="cfg_open"]
-[connection signal="request_completed" from="tab/Download/HTTPRequest" to="." method="dl_zip" unbinds=4]
 [connection signal="pressed" from="tab/Einstelungen/VBox/HBox/save_config_Button" to="." method="cfg_save"]
 [connection signal="pressed" from="tab/Einstelungen/VBox/HBox/cancel_config_Button" to="." method="cfg_cancel"]

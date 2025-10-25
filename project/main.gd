@@ -43,15 +43,6 @@ var fs_blender = ""
 var cfg_main: ConfigFile = ConfigFile.new()
 
 var downloading = false
-var dl_ziping = false
-var dl_godot = false
-var dl_blender = false
-var dl_current = ""
-
-var zip_thread = Thread.new()
-var zip_reader = ZIPReader.new()
-var zip_files: Array = []
-var zip_files_size = 0
 
 
 func _init():
@@ -60,8 +51,6 @@ func _init():
 		
 		if fs_root.dir_exists("tools"):
 			pass
-			#if not FileAccess.file_exists(c_root+c_sc):
-			#	FileAccess.open(c_root+c_sc, FileAccess.WRITE).close()
 		else:
 			fs_root.make_dir("tools")
 		
@@ -92,32 +81,13 @@ func _ready():
 
 func _process(_delta):
 	if downloading:
-		if not dl_ziping:
-			var tmp_total_size = %HTTPRequest.get_body_size()
-			var tmp_size = %HTTPRequest.get_downloaded_bytes()
-			var tmp_procent = 0
-			if tmp_size != 0:
-				tmp_procent = 100 * tmp_size / tmp_total_size
-			
-			$tab/Download/Box/ProgressBar.value = tmp_procent
-			$tab/Download/Box/item/status.text = str(snappedf(tmp_size/1048576.0, 0.001)) \
-									 +"MB von "+ str(snappedf(tmp_total_size/1048576.0, 0.001)) +"MB"
-			if dl_godot:
-				$tab/Download/Box/item/name.text = "Godot"
-			elif dl_blender:
-				$tab/Download/Box/item/name.text = "Blender"
-			else:
-				$tab/Download/Box/item/name.text = "?"
-		elif zip_thread.is_alive():
-			var tmp_procent = 0
-			if zip_files_size != 0:
-				@warning_ignore("integer_division")
-				tmp_procent = 100 * zip_files.size() / zip_files_size
-			$tab/Download/Box/ProgressBar.value = tmp_procent
-			$tab/Download/Box/item/status.text = "noch "+ str(zip_files.size()) +" von "+ str(zip_files_size)
+		if %downloader.status != 0:
+			$tab/Download/Box/ProgressBar.value = %downloader.procent
+			$tab/Download/Box/item/status.text = %downloader.status_text
+			$tab/Download/Box/item/name.text = %downloader.current_name
 		else:
-			zip_thread.wait_to_finish()
-			dl_zip_next()
+			downloading = false
+			start_check()
 
 func start_check():
 	var tmp_b_ver = cfg_main.get_value("blender", "ver", "")
@@ -161,7 +131,7 @@ func start_editor():
 	if cfg_main.get_value("blender", "integrate"):
 		if cfg_main.get_value("godot", "portable"):
 			if fs_blender == "":
-				_change_editorsettings_file(
+				EditorSettingsFile.change(
 					c_root+c_tools+fs_godot_cfg, 
 					{
 						"filesystem/import/blender/blender_path": "\"\"", 
@@ -169,7 +139,7 @@ func start_editor():
 					}
 				)
 			else:
-				_change_editorsettings_file(
+				EditorSettingsFile.change(
 					c_root+c_tools+fs_godot_cfg, 
 					{
 						"filesystem/import/blender/blender_path": "\""+c_root+c_tools+fs_blender+"\"", 
@@ -179,76 +149,6 @@ func start_editor():
 	OS.create_process("CMD.exe", ["/C", "CD " + c_root+c_proj + 
 		" && START \"\" \""+c_root+c_tools+fs_godot+"\" -e"])
 	get_tree().quit()
-
-func _change_editorsettings_file(path: String, updates: Dictionary) -> void:
-	# updates = {"key/path": "value", ...}
-	var header := ""
-	var format_version := 3
-	var resource_section_found := false
-	var lines: PackedStringArray = []
-	
-	# --- Datei lesen oder Grundgerüst anlegen ---
-	if FileAccess.file_exists(path):
-		var file_text := FileAccess.get_file_as_string(path)
-		lines = file_text.split("\n")
-		
-		# Header und Format erkennen
-		for i in range(lines.size()):
-			var trimmed := lines[i].strip_edges()
-			if trimmed.begins_with("[gd_resource"):
-				header = lines[i]
-				# Formatnummer extrahieren
-				var match2 := RegEx.new()
-				match2.compile("format=(\\d+)")
-				var m := match2.search(trimmed)
-				if m:
-					format_version = int(m.get_string(1))
-			elif trimmed.begins_with("[resource]"):
-				resource_section_found = true
-				# Rest behalten, da danach Key-Value-Zeilen kommen
-		lines.remove_at(0)
-	else:
-		# Keine Datei: Grundgerüst erzeugen
-		header = "[gd_resource type=\"EditorSettings\" format=3]"
-		lines = ["[resource]"]
-		resource_section_found = true
-	
-	# --- Sicherstellen, dass Header vorhanden ist ---
-	if header == "":
-		header = "[gd_resource type=\"EditorSettings\" format=%d]" % format_version
-	
-	# --- Key-Zeilen suchen und ersetzen ---
-	var found_keys := {}
-	for i in range(lines.size()):
-		var line := lines[i].strip_edges()
-		if line == "" or line.begins_with(";"):
-			continue
-		for key in updates.keys():
-			if line.begins_with(key + " "):
-				lines[i] = key + " = " + updates[key]
-				found_keys[key] = true
-	
-	# --- Fehlende Keys am Ende anhängen ---
-	if not resource_section_found:
-		lines.append("[resource]")
-	for key in updates.keys():
-		if not found_keys.has(key):
-			lines.append(key + " = " + updates[key])
-	
-	# --- Überflüssige Leerzeilen entfernen ---
-	while lines.size() > 0 and lines[-1].strip_edges() == "":
-		#lines.pop_back()
-		lines.remove_at(lines.size()-1)
-	
-	# --- Zusammenbauen ---
-	var new_text := header + "\n" + String("\n").join(lines) + "\n"
-	
-	# --- Schreiben ---
-	if not fs_root.dir_exists(c_root+c_tools+"editor_data/"):
-		fs_root.make_dir(c_root+c_tools+"editor_data/")
-	var file := FileAccess.open(path, FileAccess.WRITE)
-	file.store_string(new_text)
-	file.close()
 
 func start_project():
 	OS.create_process("CMD.exe", ["/C", "CD " + c_root+c_proj + 
@@ -261,67 +161,26 @@ func start_blender() -> void:
 	get_tree().quit()
 
 func dl_start_godot():
-	dl_godot = true
-	dl_next()
+	downloading = true
+	var tmp_ver = cfg_main.get_value("godot", "ver", "")
+	if not tmp_ver == "":
+		var tmp_file = "Godot_v"+tmp_ver+"-stable_win64.exe.zip"
+		var tmp_source = c_got_web+tmp_ver+"-stable/"+tmp_file
+		var tmp_to = c_root + c_tools + tmp_file
+		%downloader.start_download("Godot", tmp_source, tmp_to)
+	
 	tab = DL
 
 func dl_start_blender():
-	dl_blender = true
-	dl_next()
+	downloading = true
+	var tmp_ver = cfg_main.get_value("blender", "ver", "")
+	if not tmp_ver == "":
+		var tmp_file = "blender-"+tmp_ver+"-windows-x64.zip"
+		var tmp_source = c_blend_web+"Blender"+tmp_ver.left(3)+"/"+tmp_file
+		var tmp_to = c_root + c_tools + tmp_file
+		%downloader.start_download("Blender", tmp_source, tmp_to)
+	
 	tab = DL
-
-func dl_next():
-	dl_ziping = false
-	if dl_godot:
-		downloading = true
-		var tmp_ver = cfg_main.get_value("godot", "ver", "")
-		if not tmp_ver == "":
-			dl_current = "Godot_v"+tmp_ver+"-stable_win64.exe.zip"
-			%HTTPRequest.download_file = c_root + c_tools + dl_current
-			%HTTPRequest.request(c_got_web+tmp_ver+"-stable/"+dl_current)
-		dl_godot = false
-	elif dl_blender:
-		downloading = true
-		var tmp_ver:String = cfg_main.get_value("blender", "ver", "")
-		if not tmp_ver == "":
-			dl_current = "blender-"+tmp_ver+"-windows-x64.zip"
-			%HTTPRequest.download_file = c_root + c_tools + dl_current
-			%HTTPRequest.request(c_blend_web+"Blender"+tmp_ver.left(3)+"/"+dl_current)
-		dl_blender = false
-	else:
-		downloading = false
-		start_check()
-
-func dl_zip():
-	var err = zip_reader.open(c_root + c_tools + dl_current)
-	if err != OK:
-		return null
-	else:
-		zip_files = zip_reader.get_files()
-		zip_files_size = zip_files.size()
-		dl_zip_next()
-
-func dl_zip_next():
-	if zip_files.is_empty():
-		dl_ziping = false
-		zip_reader.close()
-		fs_root.remove("tools/" + dl_current)
-		dl_current = ""
-		zip_files_size = 0
-		dl_next()
-	else:
-		dl_ziping = true
-		zip_thread.start(Callable(self, "dl_zip_thread").bind(zip_files.pop_back()))
-
-func dl_zip_thread(file_name: String):
-	if file_name.right(1) != "/":
-		var tmp_dir = file_name.get_base_dir().split("/")
-		var tmp_comp_dir = c_root+c_tools
-		for dir in tmp_dir:
-			tmp_comp_dir += dir+"/"
-			if not fs_root.dir_exists(tmp_comp_dir):
-				fs_root.make_dir(tmp_comp_dir)
-		FileAccess.open(c_root+c_tools+file_name, FileAccess.WRITE).store_buffer(zip_reader.read_file(file_name))
 
 func cfg_open():
 	%"g-ver-setting".text = cfg_main.get_value("godot", "ver", "")
