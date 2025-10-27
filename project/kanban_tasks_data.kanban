@@ -11,27 +11,31 @@
 			"uuid": "b6b18d67-3e06-494d-921a-ab0f1aa50627",
 			"title": "Todo",
 			"tasks": [
-				"42cf05e2-5bd0-40f0-8183-615a30edf5ed",
-				"f1fa1e6e-de24-40f8-885b-0d052fbdc001",
-				"bc4e9cc5-ed47-451d-9e9c-1d58778b6e18",
-				"e6ca5f50-0cd4-4bbd-8b93-5c04f249de56",
-				"021d921d-d7d5-46b6-b87b-34cc636e186b",
 				"f6506546-d882-4ee3-ac8a-8d0ac55a059c",
 				"a340acb7-11cf-4a75-b3f1-13dca6668a67",
 				"824d5665-369d-49d0-9c2a-8f0e6397b89e",
-				"375b0d18-bf11-4f59-9290-d99fdeaef175"
+				"f092dfb5-b985-479b-a258-675ea9b64c99"
 			]
 		},
 		{
 			"uuid": "2535756d-2250-40bb-851a-233884207f9c",
 			"title": "Doing",
-			"tasks": []
+			"tasks": [
+				"42cf05e2-5bd0-40f0-8183-615a30edf5ed",
+				"f1fa1e6e-de24-40f8-885b-0d052fbdc001",
+				"e6ca5f50-0cd4-4bbd-8b93-5c04f249de56",
+				"375b0d18-bf11-4f59-9290-d99fdeaef175",
+				"021d921d-d7d5-46b6-b87b-34cc636e186b",
+				"a6fb07ce-846b-4b64-8d49-1703b4ea9f34"
+			]
 		},
 		{
 			"uuid": "036a8012-a3bb-446d-a321-a3057294745d",
 			"title": "Done",
 			"tasks": [
-				"e3518a80-19e2-41b9-9946-fad5b101ecdf"
+				"e3518a80-19e2-41b9-9946-fad5b101ecdf",
+				"1fffc930-6497-4ed4-808c-8049113b4d01",
+				"bc4e9cc5-ed47-451d-9e9c-1d58778b6e18"
 			]
 		}
 	],
@@ -119,6 +123,27 @@
 		{
 			"uuid": "375b0d18-bf11-4f59-9290-d99fdeaef175",
 			"title": ".godot und .import prüfen",
+			"description": "",
+			"category": "6116a2ff-e16e-4401-92f0-e49559636172",
+			"steps": []
+		},
+		{
+			"uuid": "1fffc930-6497-4ed4-808c-8049113b4d01",
+			"title": "blender integration",
+			"description": "",
+			"category": "6116a2ff-e16e-4401-92f0-e49559636172",
+			"steps": []
+		},
+		{
+			"uuid": "f092dfb5-b985-479b-a258-675ea9b64c99",
+			"title": "link zu download",
+			"description": "",
+			"category": "6116a2ff-e16e-4401-92f0-e49559636172",
+			"steps": []
+		},
+		{
+			"uuid": "a6fb07ce-846b-4b64-8d49-1703b4ea9f34",
+			"title": "download abbrechen",
 			"description": "",
 			"category": "6116a2ff-e16e-4401-92f0-e49559636172",
 			"steps": []

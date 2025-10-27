@@ -223,7 +223,6 @@ grow_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 0.360784)
 text = "0.0.5"
 
-[connection signal="request_completed" from="downloader" to="downloader" method="dl_zip" unbinds=4]
 [connection signal="pressed" from="tab/start/VFlow/download" to="." method="dl_start_godot"]
 [connection signal="pressed" from="tab/start/VFlow/blender-download" to="." method="dl_start_blender"]
 [connection signal="pressed" from="tab/start/VFlow/proj/edit" to="." method="start_editor"]

@@ -24,7 +24,6 @@ enum {
 			await ready
 			%tab.current_tab = value
 
-
 static var c_root = OS.get_executable_path().get_base_dir()
 const c_tools = "/tools/"
 const c_proj = "/project/"
