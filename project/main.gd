@@ -77,6 +77,9 @@ func _ready():
 	if not Engine.is_editor_hint():
 		await ready
 		start_check()
+		for arg in OS.get_cmdline_args():
+			if arg == "--edit" and %proj.visible == true:
+				self.start_editor()
 
 func _process(_delta):
 	if downloading:
@@ -127,24 +130,15 @@ func start_check():
 	tab = START
 
 func start_editor():
-	if cfg_main.get_value("blender", "integrate"):
-		if cfg_main.get_value("godot", "portable"):
-			if fs_blender == "":
-				EditorSettingsFile.change(
-					c_root+c_tools+fs_godot_cfg, 
-					{
-						"filesystem/import/blender/blender_path": "\"\"", 
-						"filesystem/external_programs/3d_model_editor": "\"\""
-					}
-				)
-			else:
-				EditorSettingsFile.change(
-					c_root+c_tools+fs_godot_cfg, 
-					{
-						"filesystem/import/blender/blender_path": "\""+c_root+c_tools+fs_blender+"\"", 
-						"filesystem/external_programs/3d_model_editor": "\""+c_root+c_tools+fs_blender+"\""
-					}
-				)
+	if cfg_main.get_value("godot", "portable"):
+		if cfg_main.get_value("blender", "integrate") and fs_blender != "":
+			EditorSettingsFile.change(
+				c_root+c_tools+fs_godot_cfg, 
+				{
+					"filesystem/import/blender/blender_path": "\""+c_root+c_tools+fs_blender+"\"", 
+					"filesystem/external_programs/3d_model_editor": "\""+c_root+c_tools+fs_blender+"\""
+				}
+			)
 	OS.create_process("CMD.exe", ["/C", "CD " + c_root+c_proj + 
 		" && START \"\" \""+c_root+c_tools+fs_godot+"\" -e"])
 	get_tree().quit()
@@ -181,6 +175,9 @@ func dl_start_blender():
 	
 	tab = DL
 
+func dl_cancel():
+	pass
+
 func cfg_open():
 	%"g-ver-setting".text = cfg_main.get_value("godot", "ver", "")
 	%"g-autostart-setting".button_pressed = cfg_main.get_value("godot", "autostart", false)
@@ -195,6 +192,15 @@ func cfg_save():
 	cfg_main.set_value("godot", "autostart", %"g-autostart-setting".button_pressed)
 	cfg_main.set_value("godot", "portable", %"g-portable-setting".button_pressed)
 	cfg_main.set_value("blender", "ver", %"b-ver-setting".text)
+	
+	if cfg_main.get_value("blender", "integrate", false) and not %"b-integrate-setting".button_pressed:
+		EditorSettingsFile.change(
+			c_root+c_tools+fs_godot_cfg, 
+			{
+				"filesystem/import/blender/blender_path": "\"\"", 
+				"filesystem/external_programs/3d_model_editor": "\"\""
+			}
+		)
 	cfg_main.set_value("blender", "integrate", %"b-integrate-setting".button_pressed)
 	
 	if %"g-portable-setting".button_pressed:

@@ -33,6 +33,7 @@ enabled=PackedStringArray("res://addons/kanban_tasks/plugin.cfg", "res://addons/
 
 [filesystem]
 
+import/blender/enabled=false
 import/fbx/enabled=false
 
 [rendering]
