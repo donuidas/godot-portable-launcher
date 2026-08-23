@@ -98,6 +98,18 @@ visible = false
 layout_mode = 2
 text = "Start Blender"
 
+[node name="git-tools" type="Button" parent="tab/start/VFlow"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "Git tools"
+
+[node name="files-gen" type="Button" parent="tab/start/VFlow"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "Make missing Files"
+
 [node name="config" type="Button" parent="tab/start/VFlow"]
 layout_mode = 2
 text = "Settings"
@@ -166,6 +178,20 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 columns = 2
 
+[node name="fs-export-label" type="Label" parent="tab/Einstelungen/VBox/config/Grid"]
+layout_mode = 2
+text = "Make export dir"
+
+[node name="fs-export-setting" type="CheckBox" parent="tab/Einstelungen/VBox/config/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="tab/Einstelungen/VBox/config/Grid"]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="tab/Einstelungen/VBox/config/Grid"]
+layout_mode = 2
+
 [node name="g-ver-label" type="Label" parent="tab/Einstelungen/VBox/config/Grid"]
 layout_mode = 2
 text = "Godot ver"
@@ -191,6 +217,12 @@ text = "Editor portable"
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="HSeparator3" type="HSeparator" parent="tab/Einstelungen/VBox/config/Grid"]
+layout_mode = 2
+
+[node name="HSeparator4" type="HSeparator" parent="tab/Einstelungen/VBox/config/Grid"]
+layout_mode = 2
+
 [node name="b-ver-label" type="Label" parent="tab/Einstelungen/VBox/config/Grid"]
 layout_mode = 2
 text = "Blender ver"
@@ -208,6 +240,20 @@ text = "Integrate Blender"
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="HSeparator5" type="HSeparator" parent="tab/Einstelungen/VBox/config/Grid"]
+layout_mode = 2
+
+[node name="HSeparator6" type="HSeparator" parent="tab/Einstelungen/VBox/config/Grid"]
+layout_mode = 2
+
+[node name="git-active-label" type="Label" parent="tab/Einstelungen/VBox/config/Grid"]
+layout_mode = 2
+text = "Git tools"
+
+[node name="git-active-setting" type="CheckBox" parent="tab/Einstelungen/VBox/config/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="HBox" type="HBoxContainer" parent="tab/Einstelungen/VBox"]
 layout_mode = 2
 
@@ -218,6 +264,35 @@ text = "Save"
 [node name="cancel_config_Button" type="Button" parent="tab/Einstelungen/VBox/HBox"]
 layout_mode = 2
 text = "Cancel"
+
+[node name="Git" type="Control" parent="tab"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 4
+
+[node name="VBox" type="VBoxContainer" parent="tab/Git"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="config" type="ScrollContainer" parent="tab/Git/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBox" type="VBoxContainer" parent="tab/Git/VBox/config"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBox" type="HBoxContainer" parent="tab/Git/VBox"]
+layout_mode = 2
+
+[node name="back_git_Button" type="Button" parent="tab/Git/VBox/HBox"]
+layout_mode = 2
+text = "back"
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 1
@@ -238,7 +313,10 @@ text = "0.0.6"
 [connection signal="pressed" from="tab/start/VFlow/proj/edit" to="." method="start_editor"]
 [connection signal="pressed" from="tab/start/VFlow/proj/start" to="." method="start_project"]
 [connection signal="pressed" from="tab/start/VFlow/blender-start" to="." method="start_blender"]
+[connection signal="pressed" from="tab/start/VFlow/git-tools" to="." method="git_open"]
+[connection signal="pressed" from="tab/start/VFlow/files-gen" to="." method="gen_missing_fils"]
 [connection signal="pressed" from="tab/start/VFlow/config" to="." method="cfg_open"]
 [connection signal="pressed" from="tab/Download/Box/MarginContainer/dl_cancel" to="." method="dl_cancel"]
 [connection signal="pressed" from="tab/Einstelungen/VBox/HBox/save_config_Button" to="." method="cfg_save"]
 [connection signal="pressed" from="tab/Einstelungen/VBox/HBox/cancel_config_Button" to="." method="cfg_cancel"]
+[connection signal="pressed" from="tab/Git/VBox/HBox/back_git_Button" to="." method="git_close"]

@@ -25,7 +25,7 @@ SysSettings="*res://global/SysSettings.tscn"
 [display]
 
 window/size/viewport_width=300
-window/size/viewport_height=200
+window/size/viewport_height=280
 
 [editor_plugins]
 

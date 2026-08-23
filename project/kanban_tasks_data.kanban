@@ -15,7 +15,8 @@
 				"824d5665-369d-49d0-9c2a-8f0e6397b89e",
 				"f092dfb5-b985-479b-a258-675ea9b64c99",
 				"5de8798f-018e-4bb9-8922-bf32135cc621",
-				"42cf05e2-5bd0-40f0-8183-615a30edf5ed"
+				"42cf05e2-5bd0-40f0-8183-615a30edf5ed",
+				"4665066a-4ae5-4559-bff4-dda2352e841e"
 			]
 		},
 		{
@@ -37,7 +38,8 @@
 				"1fffc930-6497-4ed4-808c-8049113b4d01",
 				"bc4e9cc5-ed47-451d-9e9c-1d58778b6e18",
 				"f1fa1e6e-de24-40f8-885b-0d052fbdc001",
-				"021d921d-d7d5-46b6-b87b-34cc636e186b"
+				"021d921d-d7d5-46b6-b87b-34cc636e186b",
+				"6e0cae07-0b6b-472a-bbed-d456bf74cd17"
 			]
 		}
 	],
@@ -169,6 +171,20 @@
 		{
 			"uuid": "5de8798f-018e-4bb9-8922-bf32135cc621",
 			"title": "ursprünliche blender intergration bakup",
+			"description": "",
+			"category": "6116a2ff-e16e-4401-92f0-e49559636172",
+			"steps": []
+		},
+		{
+			"uuid": "4665066a-4ae5-4559-bff4-dda2352e841e",
+			"title": "proj export",
+			"description": "",
+			"category": "6116a2ff-e16e-4401-92f0-e49559636172",
+			"steps": []
+		},
+		{
+			"uuid": "6e0cae07-0b6b-472a-bbed-d456bf74cd17",
+			"title": "anstat auto files gen mit button",
 			"description": "",
 			"category": "6116a2ff-e16e-4401-92f0-e49559636172",
 			"steps": []

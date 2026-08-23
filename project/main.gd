@@ -6,7 +6,8 @@ enum {
 	LOAD,
 	START,
 	DL,
-	CFG
+	CFG,
+	GIT
 }
 
 @export var tab = 0:
@@ -39,6 +40,9 @@ var fs_godot = ""
 var fs_godot_cfg = ""
 var fs_blender = ""
 
+var missing_main = false
+var missing_export = false
+
 var cfg_main: ConfigFile = ConfigFile.new()
 
 var downloading = false
@@ -47,31 +51,19 @@ var downloading = false
 func _init():
 	if not Engine.is_editor_hint():
 		var err = 0
-		
-		if fs_root.dir_exists("tools"):
-			pass
-		else:
-			fs_root.make_dir("tools")
-		
-		if not fs_root.dir_exists("project"):
-			fs_root.make_dir("project")
-			FileAccess.open(c_root+c_proj_file, FileAccess.WRITE).close()
-		
-		if not fs_root.dir_exists("export"):
-			fs_root.make_dir("export")
-		
 		if FileAccess.file_exists(c_root+c_config):
 			err = cfg_main.load(c_root+c_config)
 			#if err == ERR_FILE_CANT_OPEN:
 				#fs_root.remove(c_root+c_config)
 				#cfg_main.save(c_root+c_config)
-		else:
-			cfg_main.save(c_root+c_config)
 		
-		if cfg_main.get_value("godot", "portable"):
-			FileAccess.open(c_root+c_sc, FileAccess.WRITE).close()
-		else:
-			fs_root.remove(c_root+c_sc)
+		gen_check()
+		
+		if fs_root.dir_exists("tools"):
+			if cfg_main.get_value("godot", "portable"):
+				FileAccess.open(c_root+c_sc, FileAccess.WRITE).close()
+			else:
+				fs_root.remove(c_root+c_sc)
 
 func _ready():
 	if not Engine.is_editor_hint():
@@ -92,8 +84,13 @@ func _process(_delta):
 			start_check()
 
 func start_check():
+	if missing_main or missing_export:
+		%"files-gen".visible = true
+	else:
+		%"files-gen".visible = false
+	
 	var tmp_b_ver = cfg_main.get_value("blender", "ver", "")
-	if not tmp_b_ver == "":
+	if not (tmp_b_ver == "" or missing_main):
 		fs_blender = "blender-"+tmp_b_ver+"-windows-x64/blender.exe"
 		if FileAccess.file_exists(c_root+c_tools+fs_blender):
 			%"blender-start".visible = true
@@ -107,7 +104,7 @@ func start_check():
 		%"blender-download".visible = false
 	
 	var tmp_g_ver: String = cfg_main.get_value("godot", "ver", "")
-	if not tmp_g_ver == "":
+	if not (tmp_g_ver == "" or missing_main):
 		%err.visible = false
 		fs_godot = "Godot_v"+tmp_g_ver+"-stable_win64.exe"
 		fs_godot_cfg = "editor_data/editor_settings-"+tmp_g_ver.left(3)+".tres"
@@ -127,6 +124,12 @@ func start_check():
 		%proj.visible = false
 		%err.visible = true
 		%err_ver.visible = true
+	
+	if cfg_main.get_value("git", "active", false):
+		%"git-tools".visible = true
+	else:
+		%"git-tools".visible = false
+	
 	tab = START
 
 func start_editor():
@@ -178,20 +181,69 @@ func dl_start_blender():
 func dl_cancel():
 	pass
 
+func gen_check():
+	missing_main = false
+	if not (fs_root.dir_exists("tools") or fs_root.dir_exists("project")):
+		missing_main = true
+	if not FileAccess.file_exists(c_root+c_proj_file):
+		missing_main = true
+	
+	missing_export = false
+	if cfg_main.get_value("fs", "export", false):
+		if not fs_root.dir_exists("export"):
+			missing_export = true
+
+func gen_missing_fils():
+	if missing_main:
+		if fs_root.dir_exists("tools"):
+			pass
+		else:
+			fs_root.make_dir("tools")
+		
+		if not fs_root.dir_exists("project"):
+			fs_root.make_dir("project")
+			FileAccess.open(c_root+c_proj_file, FileAccess.WRITE).close()
+		
+		if cfg_main.get_value("godot", "portable", false):
+			FileAccess.open(c_root+c_sc, FileAccess.WRITE).close()
+		else:
+			fs_root.remove(c_root+c_sc)
+		
+		missing_main = false
+	
+	if cfg_main.get_value("fs", "export", false):
+		if missing_export:
+			if not fs_root.dir_exists("export"):
+				fs_root.make_dir("export")
+				
+			missing_export = false
+	
+	start_check()
+
 func cfg_open():
+	%"fs-export-setting".button_pressed = cfg_main.get_value("fs", "export", false)
+	
 	%"g-ver-setting".text = cfg_main.get_value("godot", "ver", "")
 	%"g-autostart-setting".button_pressed = cfg_main.get_value("godot", "autostart", false)
 	%"g-portable-setting".button_pressed = cfg_main.get_value("godot", "portable", false)
+	
 	%"b-ver-setting".text = cfg_main.get_value("blender", "ver", "")
 	%"b-integrate-setting".button_pressed = cfg_main.get_value("blender", "integrate", false)
+	
+	%"git-active-setting".button_pressed = cfg_main.get_value("git", "active", false)
 	
 	tab = CFG
 
 func cfg_save():
+	cfg_main.set_value("fs", "export", %"fs-export-setting".button_pressed)
+	
 	cfg_main.set_value("godot", "ver", %"g-ver-setting".text)
 	cfg_main.set_value("godot", "autostart", %"g-autostart-setting".button_pressed)
 	cfg_main.set_value("godot", "portable", %"g-portable-setting".button_pressed)
+	
 	cfg_main.set_value("blender", "ver", %"b-ver-setting".text)
+	
+	cfg_main.set_value("git", "active", %"git-active-setting".button_pressed)
 	
 	if cfg_main.get_value("blender", "integrate", false) and not %"b-integrate-setting".button_pressed:
 		EditorSettingsFile.change(
@@ -203,14 +255,22 @@ func cfg_save():
 		)
 	cfg_main.set_value("blender", "integrate", %"b-integrate-setting".button_pressed)
 	
-	if %"g-portable-setting".button_pressed:
-		FileAccess.open(c_root+c_sc, FileAccess.WRITE).close()
-	else:
-		fs_root.remove(c_root+c_sc)
+	if fs_root.dir_exists("tools"):
+		if %"g-portable-setting".button_pressed:
+			FileAccess.open(c_root+c_sc, FileAccess.WRITE).close()
+		else:
+			fs_root.remove(c_root+c_sc)
 	
 	cfg_main.save(c_root+c_config)
 	
+	gen_check()
 	start_check()
 
 func cfg_cancel():
+	start_check()
+
+func git_open():
+	tab = GIT
+
+func git_close():
 	start_check()
