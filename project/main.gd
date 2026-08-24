@@ -60,7 +60,7 @@ func _init():
 		gen_check()
 		
 		if fs_root.dir_exists("tools"):
-			if cfg_main.get_value("godot", "portable"):
+			if cfg_main.get_value("godot", "portable", false):
 				FileAccess.open(c_root+c_sc, FileAccess.WRITE).close()
 			else:
 				fs_root.remove(c_root+c_sc)
@@ -68,10 +68,16 @@ func _init():
 func _ready():
 	if not Engine.is_editor_hint():
 		await ready
+		get_window().title = OS.get_executable_path().get_file().left(-4)
 		start_check()
 		for arg in OS.get_cmdline_args():
 			if arg == "--edit" and %proj.visible == true:
 				self.start_editor()
+			elif arg == "--cfg":
+				self.cfg_open()
+			return
+		if cfg_main.get_value("godot", "autostart", false):
+			self.start_editor()
 
 func _process(_delta):
 	if downloading:
@@ -84,6 +90,10 @@ func _process(_delta):
 			start_check()
 
 func start_check():
+	if missing_main:
+		%err_files.visible = true
+	else:
+		%err_files.visible = false
 	if missing_main or missing_export:
 		%"files-gen".visible = true
 	else:
@@ -105,15 +115,12 @@ func start_check():
 	
 	var tmp_g_ver: String = cfg_main.get_value("godot", "ver", "")
 	if not (tmp_g_ver == "" or missing_main):
-		%err.visible = false
+		%err_ver.visible = false
 		fs_godot = "Godot_v"+tmp_g_ver+"-stable_win64.exe"
 		fs_godot_cfg = "editor_data/editor_settings-"+tmp_g_ver.left(3)+".tres"
 		if FileAccess.file_exists(c_root+c_tools+fs_godot):
 			%download.visible = false
 			%proj.visible = true
-			if cfg_main.get_value("godot", "autostart", false):
-				self.start_editor()
-				return
 		else:
 			%download.visible = true
 			%proj.visible = false
@@ -122,8 +129,10 @@ func start_check():
 		fs_godot_cfg = ""
 		%download.visible = false
 		%proj.visible = false
-		%err.visible = true
-		%err_ver.visible = true
+		if tmp_g_ver == "":
+			%err_ver.visible = true
+		else:
+			%err_ver.visible = false
 	
 	if cfg_main.get_value("git", "active", false):
 		%"git-tools".visible = true
@@ -183,7 +192,7 @@ func dl_cancel():
 
 func gen_check():
 	missing_main = false
-	if not (fs_root.dir_exists("tools") or fs_root.dir_exists("project")):
+	if not (fs_root.dir_exists("tools") and fs_root.dir_exists("project")):
 		missing_main = true
 	if not FileAccess.file_exists(c_root+c_proj_file):
 		missing_main = true
@@ -225,7 +234,7 @@ func cfg_open():
 	
 	%"g-ver-setting".text = cfg_main.get_value("godot", "ver", "")
 	%"g-autostart-setting".button_pressed = cfg_main.get_value("godot", "autostart", false)
-	%"g-portable-setting".button_pressed = cfg_main.get_value("godot", "portable", false)
+	%"g-portable-setting".button_pressed = cfg_main.get_value("godot", "portable", true)
 	
 	%"b-ver-setting".text = cfg_main.get_value("blender", "ver", "")
 	%"b-integrate-setting".button_pressed = cfg_main.get_value("blender", "integrate", false)
@@ -274,3 +283,33 @@ func git_open():
 
 func git_close():
 	start_check()
+
+func git_make_gitignore():
+	var file := FileAccess.open(c_root+"/.gitignore", FileAccess.WRITE)
+	var text: String = """# Godot 4+
+.godot/
+
+# Godot 3-
+.import/
+
+# Godot
+export.cfg
+# export_presets.cfg
+
+# Godot-Mono
+.mono/
+data_*/
+mono_crash.*.json
+
+# Windows
+desktop.ini
+
+# godot-portable-launcher
+tools/Godot*.exe
+tools/Godot*.cmd
+export/
+tools/blender*/
+*.blend1
+tools/editor_data/"""
+	file.store_string(text)
+	file.close()

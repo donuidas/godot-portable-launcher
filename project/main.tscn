@@ -52,19 +52,33 @@ visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
-[node name="err" type="FlowContainer" parent="tab/start"]
+[node name="err" type="VBoxContainer" parent="tab/start"]
 unique_name_in_owner = true
 layout_mode = 2
 
 [node name="err_ver" type="Label" parent="tab/start/err"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 text = "Set Godot version first"
+
+[node name="err_files" type="Label" parent="tab/start/err"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "Make missing files first"
 
 [node name="VFlow" type="VFlowContainer" parent="tab/start"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 3
+alignment = 1
+
+[node name="files-gen" type="Button" parent="tab/start/VFlow"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "Make missing Files"
 
 [node name="download" type="Button" parent="tab/start/VFlow"]
 unique_name_in_owner = true
@@ -72,12 +86,6 @@ visible = false
 layout_mode = 2
 text = "Download Godot
 "
-
-[node name="blender-download" type="Button" parent="tab/start/VFlow"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-text = "Download Blender"
 
 [node name="proj" type="VBoxContainer" parent="tab/start/VFlow"]
 unique_name_in_owner = true
@@ -92,6 +100,12 @@ text = "Edit Project"
 layout_mode = 2
 text = "Start Project"
 
+[node name="blender-download" type="Button" parent="tab/start/VFlow"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "Download Blender"
+
 [node name="blender-start" type="Button" parent="tab/start/VFlow"]
 unique_name_in_owner = true
 visible = false
@@ -104,15 +118,18 @@ visible = false
 layout_mode = 2
 text = "Git tools"
 
-[node name="files-gen" type="Button" parent="tab/start/VFlow"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-text = "Make missing Files"
-
 [node name="config" type="Button" parent="tab/start/VFlow"]
 layout_mode = 2
 text = "Settings"
+
+[node name="HBox" type="HBoxContainer" parent="tab/start"]
+custom_minimum_size = Vector2(0, 31)
+layout_mode = 2
+
+[node name="Button" type="Button" parent="tab/start/HBox"]
+visible = false
+layout_mode = 2
+text = "tst"
 
 [node name="Download" type="Control" parent="tab"]
 visible = false
@@ -284,8 +301,12 @@ size_flags_vertical = 3
 
 [node name="VBox" type="VBoxContainer" parent="tab/Git/VBox/config"]
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+size_flags_horizontal = 6
+size_flags_vertical = 6
+
+[node name="make_gitignore" type="Button" parent="tab/Git/VBox/config/VBox"]
+layout_mode = 2
+text = "make .gitignore"
 
 [node name="HBox" type="HBoxContainer" parent="tab/Git/VBox"]
 layout_mode = 2
@@ -306,17 +327,18 @@ offset_top = -23.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 0.360784)
-text = "0.0.6"
+text = "0.0.6 dev"
 
+[connection signal="pressed" from="tab/start/VFlow/files-gen" to="." method="gen_missing_fils"]
 [connection signal="pressed" from="tab/start/VFlow/download" to="." method="dl_start_godot"]
-[connection signal="pressed" from="tab/start/VFlow/blender-download" to="." method="dl_start_blender"]
 [connection signal="pressed" from="tab/start/VFlow/proj/edit" to="." method="start_editor"]
 [connection signal="pressed" from="tab/start/VFlow/proj/start" to="." method="start_project"]
+[connection signal="pressed" from="tab/start/VFlow/blender-download" to="." method="dl_start_blender"]
 [connection signal="pressed" from="tab/start/VFlow/blender-start" to="." method="start_blender"]
 [connection signal="pressed" from="tab/start/VFlow/git-tools" to="." method="git_open"]
-[connection signal="pressed" from="tab/start/VFlow/files-gen" to="." method="gen_missing_fils"]
 [connection signal="pressed" from="tab/start/VFlow/config" to="." method="cfg_open"]
 [connection signal="pressed" from="tab/Download/Box/MarginContainer/dl_cancel" to="." method="dl_cancel"]
 [connection signal="pressed" from="tab/Einstelungen/VBox/HBox/save_config_Button" to="." method="cfg_save"]
 [connection signal="pressed" from="tab/Einstelungen/VBox/HBox/cancel_config_Button" to="." method="cfg_cancel"]
+[connection signal="pressed" from="tab/Git/VBox/config/VBox/make_gitignore" to="." method="git_make_gitignore"]
 [connection signal="pressed" from="tab/Git/VBox/HBox/back_git_Button" to="." method="git_close"]

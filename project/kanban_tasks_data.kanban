@@ -26,8 +26,7 @@
 				"e6ca5f50-0cd4-4bbd-8b93-5c04f249de56",
 				"375b0d18-bf11-4f59-9290-d99fdeaef175",
 				"a6fb07ce-846b-4b64-8d49-1703b4ea9f34",
-				"4968e9da-4268-46b2-905a-d989749a960c",
-				"a340acb7-11cf-4a75-b3f1-13dca6668a67"
+				"4968e9da-4268-46b2-905a-d989749a960c"
 			]
 		},
 		{
@@ -39,7 +38,10 @@
 				"bc4e9cc5-ed47-451d-9e9c-1d58778b6e18",
 				"f1fa1e6e-de24-40f8-885b-0d052fbdc001",
 				"021d921d-d7d5-46b6-b87b-34cc636e186b",
-				"6e0cae07-0b6b-472a-bbed-d456bf74cd17"
+				"6e0cae07-0b6b-472a-bbed-d456bf74cd17",
+				"689c6446-bbfe-4f07-baa5-60622877c7d4",
+				"874d8d05-88a6-4432-aaf7-e690f4f36ab8",
+				"a340acb7-11cf-4a75-b3f1-13dca6668a67"
 			]
 		}
 	],
@@ -185,6 +187,20 @@
 		{
 			"uuid": "6e0cae07-0b6b-472a-bbed-d456bf74cd17",
 			"title": "anstat auto files gen mit button",
+			"description": "",
+			"category": "6116a2ff-e16e-4401-92f0-e49559636172",
+			"steps": []
+		},
+		{
+			"uuid": "689c6446-bbfe-4f07-baa5-60622877c7d4",
+			"title": "titelname aus dateiname",
+			"description": "",
+			"category": "6116a2ff-e16e-4401-92f0-e49559636172",
+			"steps": []
+		},
+		{
+			"uuid": "874d8d05-88a6-4432-aaf7-e690f4f36ab8",
+			"title": "start in mitte",
 			"description": "",
 			"category": "6116a2ff-e16e-4401-92f0-e49559636172",
 			"steps": []
