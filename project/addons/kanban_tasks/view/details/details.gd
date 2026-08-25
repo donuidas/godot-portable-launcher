@@ -36,14 +36,13 @@ func _ready() -> void:
 
 
 func _notification(what: int) -> void:
-	match(what):
-		NOTIFICATION_THEME_CHANGED:
-			if is_instance_valid(steps_panel_container):
-				steps_panel_container.add_theme_stylebox_override(&"panel", get_theme_stylebox(&"panel", &"Tree"))
-			if is_instance_valid(create_step_edit):
-				create_step_edit.right_icon = get_theme_icon(&"Add", &"EditorIcons")
-			if is_instance_valid(close_step_details_button):
-				close_step_details_button.icon = get_theme_icon(&"Close", &"EditorIcons")
+	if what == NOTIFICATION_THEME_CHANGED and not is_part_of_edited_scene():
+		if is_instance_valid(steps_panel_container):
+			steps_panel_container.add_theme_stylebox_override(&"panel", get_theme_stylebox(&"panel", &"Panel"))
+		if is_instance_valid(create_step_edit):
+			create_step_edit.right_icon = get_theme_icon(&"Add", &"EditorIcons")
+		if is_instance_valid(close_step_details_button):
+			close_step_details_button.icon = get_theme_icon(&"Close", &"EditorIcons")
 
 
 func update() -> void:
@@ -221,7 +220,6 @@ func __create_step(text: String) -> void:
 	task.add_step(data)
 	create_step_edit.text = ""
 	update()
-	if is_instance_valid(__step_data):
-		for step in step_holder.get_step_entries():
-			if step.step_data == data:
-				step.grab_focus.call_deferred()
+	for step in step_holder.get_step_entries():
+		if step.step_data == data:
+			step.grab_focus.call_deferred()

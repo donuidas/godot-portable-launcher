@@ -22,6 +22,9 @@ var current_name: StringName = &""
 var status_text: String = ""
 
 
+func  _ready() -> void:
+	request_completed.connect(_dl_completed)
+
 func _process(_delta):
 	if _status == dl_status.DOWNLOAD:
 		var tmp_total_size = get_body_size()
@@ -48,7 +51,16 @@ func start_download(label:String, source:String, to:String):
 	download_file = to
 	request(source)
 	current_name = label
-	await request_completed
+
+func stop_download():
+	if _status == dl_status.DOWNLOAD:
+		cancel_request()
+		DirAccess.remove_absolute(download_file)
+		_status = dl_status.NONE
+	elif _status == dl_status.UNPACK:
+		pass
+
+func _dl_completed(_result: int, _response_code: int, _headers: PackedStringArray, _body: PackedByteArray):
 	_zip()
 
 func _zip():

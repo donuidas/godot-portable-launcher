@@ -73,10 +73,9 @@ func _ready() -> void:
 
 
 func _notification(what: int) -> void:
-	match what:
-		NOTIFICATION_THEME_CHANGED:
-			if is_instance_valid(panel_container):
-				panel_container.add_theme_stylebox_override(&"panel", get_theme_stylebox(&"panel", &"Tree"))
+	if what == NOTIFICATION_THEME_CHANGED and not is_part_of_edited_scene():
+		if is_instance_valid(panel_container):
+			panel_container.add_theme_stylebox_override(&"panel", get_theme_stylebox(&"panel", &"Panel"))
 
 
 func update() -> void:
@@ -128,7 +127,7 @@ func __update_editor_data_file(path: String) -> void:
 	elif file_dialog_create_option.button_pressed:
 		ctx.create_board.emit()
 	else:
-		ctx.reload_board.emit()
+		ctx.reload_board.emit(false)
 
 
 func __apply_changes() -> void:

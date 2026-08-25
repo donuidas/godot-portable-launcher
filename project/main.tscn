@@ -1,10 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://dmfg0oj6vkgcr"]
+[gd_scene format=3 uid="uid://dmfg0oj6vkgcr"]
 
 [ext_resource type="Script" uid="uid://bwju8ccfxycdt" path="res://main.gd" id="1_a00df"]
 [ext_resource type="Script" uid="uid://bqi8b3qsdm0r6" path="res://downloader.gd" id="2_h2yge"]
 [ext_resource type="PackedScene" uid="uid://bjygaefx0yi67" path="res://item.tscn" id="2_wt56x"]
 
-[node name="main" type="Control"]
+[node name="main" type="Control" unique_id=41200896]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,11 +13,11 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_a00df")
 
-[node name="downloader" type="HTTPRequest" parent="."]
+[node name="downloader" type="HTTPRequest" parent="." unique_id=763551367]
 unique_name_in_owner = true
 script = ExtResource("2_h2yge")
 
-[node name="tab" type="TabContainer" parent="."]
+[node name="tab" type="TabContainer" parent="." unique_id=1653068636]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -28,11 +28,11 @@ grow_vertical = 2
 current_tab = 0
 tabs_visible = false
 
-[node name="loading" type="Control" parent="tab"]
+[node name="loading" type="Control" parent="tab" unique_id=1936967795]
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="Label" type="Label" parent="tab/loading"]
+[node name="Label" type="Label" parent="tab/loading" unique_id=877159961]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -47,99 +47,99 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Loading..."
 
-[node name="start" type="VBoxContainer" parent="tab"]
+[node name="start" type="VBoxContainer" parent="tab" unique_id=1728524135]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
-[node name="err" type="VBoxContainer" parent="tab/start"]
+[node name="err" type="VBoxContainer" parent="tab/start" unique_id=1568846388]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="err_ver" type="Label" parent="tab/start/err"]
+[node name="err_ver" type="Label" parent="tab/start/err" unique_id=1778282515]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 text = "Set Godot version first"
 
-[node name="err_files" type="Label" parent="tab/start/err"]
+[node name="err_files" type="Label" parent="tab/start/err" unique_id=1445815146]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 text = "Make missing files first"
 
-[node name="VFlow" type="VFlowContainer" parent="tab/start"]
+[node name="VFlow" type="VFlowContainer" parent="tab/start" unique_id=1605366694]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 3
 alignment = 1
 
-[node name="files-gen" type="Button" parent="tab/start/VFlow"]
+[node name="files-gen" type="Button" parent="tab/start/VFlow" unique_id=1628612168]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 text = "Make missing Files"
 
-[node name="download" type="Button" parent="tab/start/VFlow"]
+[node name="download" type="Button" parent="tab/start/VFlow" unique_id=60272411]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 text = "Download Godot
 "
 
-[node name="proj" type="VBoxContainer" parent="tab/start/VFlow"]
+[node name="proj" type="VBoxContainer" parent="tab/start/VFlow" unique_id=450429452]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="edit" type="Button" parent="tab/start/VFlow/proj"]
+[node name="edit" type="Button" parent="tab/start/VFlow/proj" unique_id=1174310940]
 layout_mode = 2
 text = "Edit Project"
 
-[node name="start" type="Button" parent="tab/start/VFlow/proj"]
+[node name="start" type="Button" parent="tab/start/VFlow/proj" unique_id=1872141817]
 layout_mode = 2
 text = "Start Project"
 
-[node name="blender-download" type="Button" parent="tab/start/VFlow"]
+[node name="blender-download" type="Button" parent="tab/start/VFlow" unique_id=1633747527]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 text = "Download Blender"
 
-[node name="blender-start" type="Button" parent="tab/start/VFlow"]
+[node name="blender-start" type="Button" parent="tab/start/VFlow" unique_id=936733442]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 text = "Start Blender"
 
-[node name="git-tools" type="Button" parent="tab/start/VFlow"]
+[node name="git-tools" type="Button" parent="tab/start/VFlow" unique_id=926249249]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 text = "Git tools"
 
-[node name="config" type="Button" parent="tab/start/VFlow"]
+[node name="config" type="Button" parent="tab/start/VFlow" unique_id=1921742351]
 layout_mode = 2
 text = "Settings"
 
-[node name="HBox" type="HBoxContainer" parent="tab/start"]
+[node name="HBox" type="HBoxContainer" parent="tab/start" unique_id=1726799289]
 custom_minimum_size = Vector2(0, 31)
 layout_mode = 2
 
-[node name="Button" type="Button" parent="tab/start/HBox"]
+[node name="Button" type="Button" parent="tab/start/HBox" unique_id=1708199063]
 visible = false
 layout_mode = 2
 text = "tst"
 
-[node name="Download" type="Control" parent="tab"]
+[node name="Download" type="Control" parent="tab" unique_id=1837633968]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
-[node name="HTTPRequest" type="HTTPRequest" parent="tab/Download"]
+[node name="HTTPRequest" type="HTTPRequest" parent="tab/Download" unique_id=1580630179]
 unique_name_in_owner = true
 
-[node name="Box" type="BoxContainer" parent="tab/Download"]
+[node name="Box" type="BoxContainer" parent="tab/Download" unique_id=1084171601]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -148,36 +148,35 @@ grow_horizontal = 2
 grow_vertical = 2
 vertical = true
 
-[node name="item" parent="tab/Download/Box" instance=ExtResource("2_wt56x")]
+[node name="item" parent="tab/Download/Box" unique_id=519013077 instance=ExtResource("2_wt56x")]
 layout_mode = 2
 
-[node name="ProgressBar" type="ProgressBar" parent="tab/Download/Box"]
+[node name="ProgressBar" type="ProgressBar" parent="tab/Download/Box" unique_id=2069186739]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="tab/Download/Box"]
+[node name="MarginContainer" type="MarginContainer" parent="tab/Download/Box" unique_id=425920206]
 layout_mode = 2
 theme_override_constants/margin_top = 10
 
-[node name="dl_cancel" type="Button" parent="tab/Download/Box/MarginContainer"]
-visible = false
+[node name="dl_cancel" type="Button" parent="tab/Download/Box/MarginContainer" unique_id=426907860]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 text = "cancel"
 
-[node name="end" type="Button" parent="tab/Download/Box"]
+[node name="end" type="Button" parent="tab/Download/Box" unique_id=84372557]
 visible = false
 layout_mode = 2
 text = "fertig"
 
-[node name="Einstelungen" type="Control" parent="tab"]
+[node name="Einstelungen" type="Control" parent="tab" unique_id=422472542]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 3
 
-[node name="VBox" type="VBoxContainer" parent="tab/Einstelungen"]
+[node name="VBox" type="VBoxContainer" parent="tab/Einstelungen" unique_id=145253652]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -185,109 +184,109 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="config" type="ScrollContainer" parent="tab/Einstelungen/VBox"]
+[node name="config" type="ScrollContainer" parent="tab/Einstelungen/VBox" unique_id=204834713]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Grid" type="GridContainer" parent="tab/Einstelungen/VBox/config"]
+[node name="Grid" type="GridContainer" parent="tab/Einstelungen/VBox/config" unique_id=116067665]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 columns = 2
 
-[node name="fs-export-label" type="Label" parent="tab/Einstelungen/VBox/config/Grid"]
+[node name="fs-export-label" type="Label" parent="tab/Einstelungen/VBox/config/Grid" unique_id=926578802]
 layout_mode = 2
 text = "Make export dir"
 
-[node name="fs-export-setting" type="CheckBox" parent="tab/Einstelungen/VBox/config/Grid"]
+[node name="fs-export-setting" type="CheckBox" parent="tab/Einstelungen/VBox/config/Grid" unique_id=1554916219]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="HSeparator" type="HSeparator" parent="tab/Einstelungen/VBox/config/Grid"]
+[node name="HSeparator" type="HSeparator" parent="tab/Einstelungen/VBox/config/Grid" unique_id=1164701450]
 layout_mode = 2
 
-[node name="HSeparator2" type="HSeparator" parent="tab/Einstelungen/VBox/config/Grid"]
+[node name="HSeparator2" type="HSeparator" parent="tab/Einstelungen/VBox/config/Grid" unique_id=2103437935]
 layout_mode = 2
 
-[node name="g-ver-label" type="Label" parent="tab/Einstelungen/VBox/config/Grid"]
+[node name="g-ver-label" type="Label" parent="tab/Einstelungen/VBox/config/Grid" unique_id=951321743]
 layout_mode = 2
 text = "Godot ver"
 
-[node name="g-ver-setting" type="LineEdit" parent="tab/Einstelungen/VBox/config/Grid"]
+[node name="g-ver-setting" type="LineEdit" parent="tab/Einstelungen/VBox/config/Grid" unique_id=1176320518]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="g-autostart-label" type="Label" parent="tab/Einstelungen/VBox/config/Grid"]
+[node name="g-autostart-label" type="Label" parent="tab/Einstelungen/VBox/config/Grid" unique_id=804464196]
 layout_mode = 2
 text = "Editor autostart"
 
-[node name="g-autostart-setting" type="CheckBox" parent="tab/Einstelungen/VBox/config/Grid"]
+[node name="g-autostart-setting" type="CheckBox" parent="tab/Einstelungen/VBox/config/Grid" unique_id=1700348324]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="g-portable-label" type="Label" parent="tab/Einstelungen/VBox/config/Grid"]
+[node name="g-portable-label" type="Label" parent="tab/Einstelungen/VBox/config/Grid" unique_id=4500361]
 layout_mode = 2
 text = "Editor portable"
 
-[node name="g-portable-setting" type="CheckBox" parent="tab/Einstelungen/VBox/config/Grid"]
+[node name="g-portable-setting" type="CheckBox" parent="tab/Einstelungen/VBox/config/Grid" unique_id=1816823400]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="HSeparator3" type="HSeparator" parent="tab/Einstelungen/VBox/config/Grid"]
+[node name="HSeparator3" type="HSeparator" parent="tab/Einstelungen/VBox/config/Grid" unique_id=557560528]
 layout_mode = 2
 
-[node name="HSeparator4" type="HSeparator" parent="tab/Einstelungen/VBox/config/Grid"]
+[node name="HSeparator4" type="HSeparator" parent="tab/Einstelungen/VBox/config/Grid" unique_id=1623494518]
 layout_mode = 2
 
-[node name="b-ver-label" type="Label" parent="tab/Einstelungen/VBox/config/Grid"]
+[node name="b-ver-label" type="Label" parent="tab/Einstelungen/VBox/config/Grid" unique_id=1100196843]
 layout_mode = 2
 text = "Blender ver"
 
-[node name="b-ver-setting" type="LineEdit" parent="tab/Einstelungen/VBox/config/Grid"]
+[node name="b-ver-setting" type="LineEdit" parent="tab/Einstelungen/VBox/config/Grid" unique_id=1989417223]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="b-integrate-label" type="Label" parent="tab/Einstelungen/VBox/config/Grid"]
+[node name="b-integrate-label" type="Label" parent="tab/Einstelungen/VBox/config/Grid" unique_id=780481848]
 layout_mode = 2
 text = "Integrate Blender"
 
-[node name="b-integrate-setting" type="CheckBox" parent="tab/Einstelungen/VBox/config/Grid"]
+[node name="b-integrate-setting" type="CheckBox" parent="tab/Einstelungen/VBox/config/Grid" unique_id=1948333303]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="HSeparator5" type="HSeparator" parent="tab/Einstelungen/VBox/config/Grid"]
+[node name="HSeparator5" type="HSeparator" parent="tab/Einstelungen/VBox/config/Grid" unique_id=2008168345]
 layout_mode = 2
 
-[node name="HSeparator6" type="HSeparator" parent="tab/Einstelungen/VBox/config/Grid"]
+[node name="HSeparator6" type="HSeparator" parent="tab/Einstelungen/VBox/config/Grid" unique_id=456108055]
 layout_mode = 2
 
-[node name="git-active-label" type="Label" parent="tab/Einstelungen/VBox/config/Grid"]
+[node name="git-active-label" type="Label" parent="tab/Einstelungen/VBox/config/Grid" unique_id=1517553616]
 layout_mode = 2
 text = "Git tools"
 
-[node name="git-active-setting" type="CheckBox" parent="tab/Einstelungen/VBox/config/Grid"]
+[node name="git-active-setting" type="CheckBox" parent="tab/Einstelungen/VBox/config/Grid" unique_id=512058566]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="HBox" type="HBoxContainer" parent="tab/Einstelungen/VBox"]
+[node name="HBox" type="HBoxContainer" parent="tab/Einstelungen/VBox" unique_id=2068573736]
 layout_mode = 2
 
-[node name="save_config_Button" type="Button" parent="tab/Einstelungen/VBox/HBox"]
+[node name="save_config_Button" type="Button" parent="tab/Einstelungen/VBox/HBox" unique_id=1362397544]
 layout_mode = 2
 text = "Save"
 
-[node name="cancel_config_Button" type="Button" parent="tab/Einstelungen/VBox/HBox"]
+[node name="cancel_config_Button" type="Button" parent="tab/Einstelungen/VBox/HBox" unique_id=558178285]
 layout_mode = 2
 text = "Cancel"
 
-[node name="Git" type="Control" parent="tab"]
+[node name="Git" type="Control" parent="tab" unique_id=1367992840]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 4
 
-[node name="VBox" type="VBoxContainer" parent="tab/Git"]
+[node name="VBox" type="VBoxContainer" parent="tab/Git" unique_id=118370574]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -295,27 +294,27 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="config" type="ScrollContainer" parent="tab/Git/VBox"]
+[node name="config" type="ScrollContainer" parent="tab/Git/VBox" unique_id=71524899]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="VBox" type="VBoxContainer" parent="tab/Git/VBox/config"]
+[node name="VBox" type="VBoxContainer" parent="tab/Git/VBox/config" unique_id=1444711673]
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 6
 
-[node name="make_gitignore" type="Button" parent="tab/Git/VBox/config/VBox"]
+[node name="make_gitignore" type="Button" parent="tab/Git/VBox/config/VBox" unique_id=1137221553]
 layout_mode = 2
 text = "make .gitignore"
 
-[node name="HBox" type="HBoxContainer" parent="tab/Git/VBox"]
+[node name="HBox" type="HBoxContainer" parent="tab/Git/VBox" unique_id=522117908]
 layout_mode = 2
 
-[node name="back_git_Button" type="Button" parent="tab/Git/VBox/HBox"]
+[node name="back_git_Button" type="Button" parent="tab/Git/VBox/HBox" unique_id=662526556]
 layout_mode = 2
 text = "back"
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="." unique_id=620606079]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0

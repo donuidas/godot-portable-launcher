@@ -11,21 +11,19 @@
 			"uuid": "b6b18d67-3e06-494d-921a-ab0f1aa50627",
 			"title": "Todo",
 			"tasks": [
-				"f6506546-d882-4ee3-ac8a-8d0ac55a059c",
 				"824d5665-369d-49d0-9c2a-8f0e6397b89e",
 				"f092dfb5-b985-479b-a258-675ea9b64c99",
 				"5de8798f-018e-4bb9-8922-bf32135cc621",
 				"42cf05e2-5bd0-40f0-8183-615a30edf5ed",
-				"4665066a-4ae5-4559-bff4-dda2352e841e"
+				"4665066a-4ae5-4559-bff4-dda2352e841e",
+				"e6ca5f50-0cd4-4bbd-8b93-5c04f249de56",
+				"f11aafc6-bf12-40bb-976d-1b812319aa2a"
 			]
 		},
 		{
 			"uuid": "2535756d-2250-40bb-851a-233884207f9c",
 			"title": "Doing",
 			"tasks": [
-				"e6ca5f50-0cd4-4bbd-8b93-5c04f249de56",
-				"375b0d18-bf11-4f59-9290-d99fdeaef175",
-				"a6fb07ce-846b-4b64-8d49-1703b4ea9f34",
 				"4968e9da-4268-46b2-905a-d989749a960c"
 			]
 		},
@@ -33,15 +31,17 @@
 			"uuid": "036a8012-a3bb-446d-a321-a3057294745d",
 			"title": "Done",
 			"tasks": [
-				"e3518a80-19e2-41b9-9946-fad5b101ecdf",
 				"1fffc930-6497-4ed4-808c-8049113b4d01",
 				"bc4e9cc5-ed47-451d-9e9c-1d58778b6e18",
 				"f1fa1e6e-de24-40f8-885b-0d052fbdc001",
-				"021d921d-d7d5-46b6-b87b-34cc636e186b",
 				"6e0cae07-0b6b-472a-bbed-d456bf74cd17",
 				"689c6446-bbfe-4f07-baa5-60622877c7d4",
 				"874d8d05-88a6-4432-aaf7-e690f4f36ab8",
-				"a340acb7-11cf-4a75-b3f1-13dca6668a67"
+				"375b0d18-bf11-4f59-9290-d99fdeaef175",
+				"e3518a80-19e2-41b9-9946-fad5b101ecdf",
+				"021d921d-d7d5-46b6-b87b-34cc636e186b",
+				"a340acb7-11cf-4a75-b3f1-13dca6668a67",
+				"a6fb07ce-846b-4b64-8d49-1703b4ea9f34"
 			]
 		}
 	],
@@ -62,7 +62,7 @@
 		},
 		{
 			"uuid": "e3518a80-19e2-41b9-9946-fad5b101ecdf",
-			"title": "auslagern",
+			"title": "code auslagern",
 			"description": "",
 			"category": "6116a2ff-e16e-4401-92f0-e49559636172",
 			"steps": [
@@ -115,18 +115,24 @@
 			]
 		},
 		{
-			"uuid": "f6506546-d882-4ee3-ac8a-8d0ac55a059c",
-			"title": "git/ungit",
-			"description": "",
-			"category": "6116a2ff-e16e-4401-92f0-e49559636172",
-			"steps": []
-		},
-		{
 			"uuid": "a340acb7-11cf-4a75-b3f1-13dca6668a67",
-			"title": "gitignor",
+			"title": "git tools",
 			"description": "",
 			"category": "6116a2ff-e16e-4401-92f0-e49559636172",
-			"steps": []
+			"steps": [
+				{
+					"details": "gitignore",
+					"done": true
+				},
+				{
+					"details": "git",
+					"done": false
+				},
+				{
+					"details": "ungit",
+					"done": false
+				}
+			]
 		},
 		{
 			"uuid": "824d5665-369d-49d0-9c2a-8f0e6397b89e",
@@ -161,7 +167,16 @@
 			"title": "download abbrechen",
 			"description": "",
 			"category": "6116a2ff-e16e-4401-92f0-e49559636172",
-			"steps": []
+			"steps": [
+				{
+					"details": "dl",
+					"done": true
+				},
+				{
+					"details": "unpack",
+					"done": false
+				}
+			]
 		},
 		{
 			"uuid": "4968e9da-4268-46b2-905a-d989749a960c",
@@ -201,6 +216,13 @@
 		{
 			"uuid": "874d8d05-88a6-4432-aaf7-e690f4f36ab8",
 			"title": "start in mitte",
+			"description": "",
+			"category": "6116a2ff-e16e-4401-92f0-e49559636172",
+			"steps": []
+		},
+		{
+			"uuid": "f11aafc6-bf12-40bb-976d-1b812319aa2a",
+			"title": "blender integration auch ohne godot portable",
 			"description": "",
 			"category": "6116a2ff-e16e-4401-92f0-e49559636172",
 			"steps": []

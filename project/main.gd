@@ -121,6 +121,10 @@ func start_check():
 		if FileAccess.file_exists(c_root+c_tools+fs_godot):
 			%download.visible = false
 			%proj.visible = true
+			if fs_root.dir_exists("project/.godot") or fs_root.dir_exists("project/.import"):
+				%proj/start.visible = true
+			else:
+				%proj/start.visible = false
 		else:
 			%download.visible = true
 			%proj.visible = false
@@ -188,7 +192,7 @@ func dl_start_blender():
 	tab = DL
 
 func dl_cancel():
-	pass
+	%downloader.stop_download()
 
 func gen_check():
 	missing_main = false
