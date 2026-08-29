@@ -76,13 +76,11 @@ alignment = 1
 
 [node name="files-gen" type="Button" parent="tab/start/VFlow" unique_id=1628612168]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 text = "Make missing Files"
 
 [node name="download" type="Button" parent="tab/start/VFlow" unique_id=60272411]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 text = "Download Godot
 "
@@ -102,7 +100,6 @@ text = "Start Project"
 
 [node name="blender-download" type="Button" parent="tab/start/VFlow" unique_id=1633747527]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 text = "Download Blender"
 
@@ -326,7 +323,7 @@ offset_top = -23.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 0.360784)
-text = "0.0.6 dev"
+text = "0.0.6"
 
 [connection signal="pressed" from="tab/start/VFlow/files-gen" to="." method="gen_missing_fils"]
 [connection signal="pressed" from="tab/start/VFlow/download" to="." method="dl_start_godot"]
